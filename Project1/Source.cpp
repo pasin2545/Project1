@@ -14,7 +14,7 @@ int main() {
 				window.close();
 				break;
 			case sf::Event::Resized:
-				printf("New window width : %i New window height : %i \n,evnt.size.width,evnt.size.height");
+				printf_s("New window width : %i New window height : %i \n,evnt.size.width,evnt.size.height");
 				break;
 			case sf::Event::TextEntered:
 				if (evnt.text.unicode < 128) {
