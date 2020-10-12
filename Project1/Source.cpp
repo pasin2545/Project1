@@ -3,7 +3,7 @@
 #include"Animation.h"
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode(512, 512), "2D Game", sf::Style::Close | sf::Style::Resize);
+	sf::RenderWindow window(sf::VideoMode(1080, 720), "2D Game", sf::Style::Close | sf::Style::Resize);
 	sf::RectangleShape player(sf::Vector2f(290.0f, 250.0f));
 	player.setPosition(206.0f, 206.0f);
 	sf::Texture playerTexture;
@@ -15,7 +15,7 @@ int main() {
 	textureSize.y /= 1;
 
 	player.setTextureRect(sf::IntRect(textureSize.x * 2, textureSize.y * 0, textureSize.x, textureSize.y));*/
-	Animation animetion(&playerTexture, sf::Vector2u(6, 1), 0.3f);
+	Animation animation(&playerTexture, sf::Vector2u(6, 1), 0.3f);
 
 	float deltaTime = 0.0f;
 	sf::Clock clock;
@@ -40,8 +40,8 @@ int main() {
 				}*/
 			}
 		}
-		animetion.Update(0, deltaTime);
-		player.setTextureRect(animetion.uvRect);
+		animation.Update(0, deltaTime);
+		player.setTextureRect(animation.uvRect);
 		//keyboard
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
 			player.move(-0.1f, 0.0f);
