@@ -4,6 +4,7 @@
 #include"player.h"
 #include"monster1.h"
 #include"Platform.h"
+#include"Collider.h"
 
 static const float VIEW_HEIGHT = 720.0f;
 static const float VIEW_LENGTH = 1080.0f;
@@ -17,14 +18,6 @@ void ResizeView(const sf::RenderWindow& window, sf::View& view)
 int main() {
 	sf::RenderWindow window(sf::VideoMode(1080, 720), "2D Game", sf::Style::Close | sf::Style::Close);
 	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_LENGTH, VIEW_HEIGHT));
-
-	/*sf::RectangleShape collision(sf::Vector2f(100.0f, 100.0f));
-	collision.setPosition({ 280.f, 335.f });
-	collision.setFillColor(sf::Color::Red);
-
-	sf::RectangleShape collision2(sf::Vector2f(100.0f, 100.0f));
-	collision2.setPosition({ 850.f, 335.f });
-	collision2.setFillColor(sf::Color::Red);*/
 
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("image.png");
@@ -70,36 +63,4 @@ int main() {
 		window.display();
 	}
 	return 0;
-}
-
-void monster1::Updatem1(float deltatimem1) {
-	sf::Vector2f movement(0.0f, 0.0f);
-	movement.x -= speedm1 * deltatimem1;
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		movement.x += speedm1 * deltatimem1;
-	}
-
-	if (movement.x == 0.0f) {
-		rowm1 = 0;
-	}
-	else {
-		rowm1 = 1;
-		if (movement.x > 0.0f) {
-			faceRightm1 = true;
-		}
-		else {
-			faceRightm1 = false;
-		}
-	}
-
-	animation.Update(rowm1, deltatimem1, faceRightm1);
-	bodym1.setTextureRect(animation.uvRect);
-	bodym1.move(movement);
-}
-
-void monster1::Draw(sf::RenderWindow& window)
-{
-	window.draw(bodym1);
-
 }

@@ -12,10 +12,9 @@ public:
 	void Draw(sf::RenderWindow& window);
 
 	sf::Vector2f GetPosition() { return body.getPosition(); }
-	Collider& GetCollider() { return collider; }
+	Collider GetCollider() { return Collider(body); }
 
 private:
-	Collider collider;
 	sf::RectangleShape body;
 	Animation animation;
 	unsigned int row;

@@ -1,11 +1,15 @@
 #include "Collider.h"
 
-Collider::Collider(const sf::RectangleShape& body) :
+Collider::Collider(sf::RectangleShape& body) :
 	body(body)
 {
 }
 
-bool Collider::CheckCollistion(Collider& other,float push)
+Collider::~Collider()
+{
+}
+
+bool Collider::CheckCollistion(Collider other,float push)
 {
 	sf::Vector2f otherPosition = other.GetPosition();
 	sf::Vector2f otherHalfSize = other.GetHalfSize();
@@ -14,6 +18,7 @@ bool Collider::CheckCollistion(Collider& other,float push)
 
 	float deltaX = otherPosition.x - thisPosition.x;
 	float deltaY = otherPosition.y - thisPosition.y;
+
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 

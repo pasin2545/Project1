@@ -18,7 +18,7 @@ Animation::~Animation()
 
 }
 
-void Animation::Update(int row, int deltaTime,bool faceRight)
+void Animation::Update(int row, float deltaTime,bool faceRight)
 {
 	currentImage.y = row;
 	totalTime += deltaTime;
