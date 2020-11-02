@@ -19,17 +19,16 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(1536, 768), "2D Game", sf::Style::Close | sf::Style::Close);
 	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_LENGTH, VIEW_HEIGHT));
 
-	//sf::RectangleShape player(sf::Vector2f(100.0f, 100.0f));
+	
 
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("image.png");
-	sf::Texture bgTexture;
-	bgTexture.loadFromFile("BackGround.png");
-	Player player(&playerTexture,&bgTexture, sf::Vector2u(8, 6), 0.3f,50.0f);
+	Player player(&playerTexture, sf::Vector2u(8, 6), 0.3f,50.0f);
 
 	//***********************Box*************************************************************
-	//Platform platform1(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f));
-	Platform platform2(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 200.0f));
+	Platform platform1(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f));
+	Platform platform2(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));
+	//Platform platform3(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));
 	//***************************************************************************************
 
 	/*sf::Texture monster1Texture;
@@ -37,12 +36,18 @@ int main() {
 	monster1 monster1(&monster1Texture, sf::Vector2u(8, 6), 0.3f, 50.0f);*/
 
 	//***********************Background*******************************
+	sf::RectangleShape bg(sf::Vector2f(1536.0f, 768.0f));
+	sf::Texture bgTexture;
+	bgTexture.loadFromFile("BackGround.png");
+	bg.setTexture(&bgTexture);
 	//****************************************************************
 
 	float deltaTime = 1.0f;
 	sf::Clock clock;
 
 	while (window.isOpen()) {
+		sf::Vector2f pos = player.GetPosition();
+		bg.setPosition(pos.x-768, pos.y-384);
 		deltaTime = clock.restart().asSeconds();
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
@@ -57,16 +62,17 @@ int main() {
 				break;
 			}
 		}
+		
 		player.Update(1.0);
-		//platform1.GetCollider().CheckCollistion(player.GetCollider(),0.0f);
-		//platform2.GetCollider().CheckCollistion(player.GetCollider(),1.0f);
+		platform1.GetCollider().CheckCollistion(player.GetCollider(),0.0f);
+		platform2.GetCollider().CheckCollistion(player.GetCollider(),0.0f);
 		view.setCenter(player.GetPosition());
 		window.clear();
+		window.draw(bg);
 		window.setView(view);
 		player.Draw(window);
-		//platform1.Draw(window);
-		//platform2.Draw(window);
-		
+		platform1.Draw(window);
+		platform2.Draw(window);
 		window.display();
 	}
 	return 0;
