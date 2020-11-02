@@ -26,7 +26,7 @@ int main() {
 	Player player(&playerTexture, sf::Vector2u(8, 6), 0.3f,50.0f);
 
 	//***********************Box*************************************************************
-	Platform platform1(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f));
+	Platform platform1(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, -250.0f));
 	Platform platform2(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));
 	//Platform platform3(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));
 	//***************************************************************************************
@@ -40,6 +40,14 @@ int main() {
 	sf::Texture bgTexture;
 	bgTexture.loadFromFile("BackGround.png");
 	bg.setTexture(&bgTexture);
+	//****************************************************************
+
+	//***********************Floor************************************
+	sf::RectangleShape floor(sf::Vector2f(2583.0f, 256.0f));
+	sf::Texture floorTexture;
+	floorTexture.loadFromFile("floor2.png");
+	floor.setTexture(&floorTexture);
+	floor.setPosition(sf::Vector2f(-768.0f, 118.0f));
 	//****************************************************************
 
 	float deltaTime = 1.0f;
@@ -65,10 +73,11 @@ int main() {
 		
 		player.Update(1.0);
 		platform1.GetCollider().CheckCollistion(player.GetCollider(),0.0f);
-		platform2.GetCollider().CheckCollistion(player.GetCollider(),0.0f);
+		platform2.GetCollider().CheckCollistion(player.GetCollider(),1.0f);
 		view.setCenter(player.GetPosition());
 		window.clear();
 		window.draw(bg);
+		window.draw(floor);
 		window.setView(view);
 		player.Draw(window);
 		platform1.Draw(window);
