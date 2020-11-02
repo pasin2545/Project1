@@ -5,7 +5,7 @@
 class Player
 {
 public:
-	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime,float speed);
+	Player(sf::Texture* texture, sf::Texture* bgtexture, sf::Vector2u imageCount, float switchTime,float speed);
 	~Player();
 
 	void Update(float deltatme);
@@ -15,6 +15,7 @@ public:
 	Collider GetCollider() { return Collider(body); }
 
 private:
+	sf::RectangleShape bg;
 	sf::RectangleShape body;
 	Animation animation;
 	unsigned int row;
