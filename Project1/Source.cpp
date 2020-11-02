@@ -2,6 +2,7 @@
 #include<iostream>
 #include"Animation.h"
 #include"player.h"
+#include<vector>
 #include"monster1.h"
 #include"Platform.h"
 #include"Collider.h"
@@ -19,15 +20,21 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(1536, 768), "2D Game", sf::Style::Close | sf::Style::Close);
 	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_LENGTH, VIEW_HEIGHT));
 
-	
+
 
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("image.png");
-	Player player(&playerTexture, sf::Vector2u(8, 6), 0.3f,50.0f);
+	Player player(&playerTexture, sf::Vector2u(8, 6), 0.3f, 250.0f, 200.0f);
+
+	std::vector<Platform> platforms;
+
+	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, -250.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 200.0f), sf::Vector2f(300.0f, 200.0f)));
 
 	//***********************Box*************************************************************
-	Platform platform1(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, -250.0f));
-	Platform platform2(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));
+	/*Platform platform1(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, -250.0f));
+	Platform platform2(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));*/
 	//Platform platform3(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));
 	//***************************************************************************************
 
@@ -47,7 +54,7 @@ int main() {
 	sf::Texture floorTexture;
 	floorTexture.loadFromFile("floor2.png");
 	floor.setTexture(&floorTexture);
-	floor.setPosition(sf::Vector2f(-768.0f, 118.0f));
+	floor.setPosition(sf::Vector2f(0.0f,0.0f));
 	//****************************************************************
 
 	float deltaTime = 1.0f;
@@ -55,8 +62,12 @@ int main() {
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
+		printf("%f %f\n", pos.x, pos.y);
 		bg.setPosition(pos.x-768, pos.y-384);
 		deltaTime = clock.restart().asSeconds();
+		if (deltaTime > 1.0f / 20.0f)
+			deltaTime = 1.0f / 20.0f;
+
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
@@ -71,17 +82,24 @@ int main() {
 			}
 		}
 		
-		player.Update(1.0);
-		platform1.GetCollider().CheckCollistion(player.GetCollider(),0.0f);
-		platform2.GetCollider().CheckCollistion(player.GetCollider(),1.0f);
+		player.Update(deltaTime);
+
+		sf::Vector2f direction;
+
+		for (Platform& platform : platforms) 
+			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f))
+				player.OnCollistion(direction);
+		
 		view.setCenter(player.GetPosition());
 		window.clear();
 		window.draw(bg);
 		window.draw(floor);
 		window.setView(view);
 		player.Draw(window);
-		platform1.Draw(window);
-		platform2.Draw(window);
+
+		for (Platform& platform : platforms)
+			platform.Draw(window);
+		
 		window.display();
 	}
 	return 0;
