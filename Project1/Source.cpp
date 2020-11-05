@@ -28,14 +28,9 @@ int main() {
 
 	std::vector<Platform> platforms;
 
-	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, -250.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 200.0f), sf::Vector2f(300.0f, 200.0f)));
-
 	//***********************Box*************************************************************
-	/*Platform platform1(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, -250.0f));
-	Platform platform2(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));*/
-	//Platform platform3(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f));
+	//platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, -250.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f)));
 	//***************************************************************************************
 
 	/*sf::Texture monster1Texture;
@@ -50,11 +45,7 @@ int main() {
 	//****************************************************************
 
 	//***********************Floor************************************
-	sf::RectangleShape floor(sf::Vector2f(2583.0f, 256.0f));
-	sf::Texture floorTexture;
-	floorTexture.loadFromFile("floor2.png");
-	floor.setTexture(&floorTexture);
-	floor.setPosition(sf::Vector2f(0.0f,0.0f));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 200.0f), sf::Vector2f(300.0f, 200.0f)));
 	//****************************************************************
 
 	float deltaTime = 1.0f;
@@ -93,7 +84,6 @@ int main() {
 		view.setCenter(player.GetPosition());
 		window.clear();
 		window.draw(bg);
-		window.draw(floor);
 		window.setView(view);
 		player.Draw(window);
 
