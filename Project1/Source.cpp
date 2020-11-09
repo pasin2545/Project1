@@ -29,13 +29,45 @@ int main() {
 	std::vector<Platform> platforms;
 
 	//***********************Box*************************************************************
-	//platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, -250.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 80.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(600.0f, 0.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(1450.0f, 0.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(6850.0f, 0.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 400.0f), sf::Vector2f(7400.0f, -175.0f)));
 	//***************************************************************************************
 
-	/*sf::Texture monster1Texture;
+
+	//*********************************Brick*************************************************
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3050.0f, 0.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3350.0f, 0.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3650.0f, 0.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(4200.0f, 0.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5300.0f, -25.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5400.0f, -25.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5400.0f, -125.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -25.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -125.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -225.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -225.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -125.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -25.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6100.0f, -125.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6100.0f, -25.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6200.0f, -25.0f)));
+	//***************************************************************************************
+
+
+	//*********************************Floor*************************************************
+	platforms.push_back(Platform(nullptr, sf::Vector2f(2500.0f, 350.0f), sf::Vector2f(300.0f, 200.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(2350.0f, 200.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(5050.0f, 200.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(6450.0f, 200.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(1700.0f, 350.0f), sf::Vector2f(8100.0f, 200.0f)));
+	//***************************************************************************************
+
+	sf::Texture monster1Texture;
 	monster1Texture.loadFromFile("monster1.png");
-	monster1 monster1(&monster1Texture, sf::Vector2u(8, 6), 0.3f, 50.0f);*/
+	monster1 monster1(&monster1Texture, sf::Vector2u(5, 1), 0.3f, 200.0f);
 
 	//***********************Background*******************************
 	sf::RectangleShape bg(sf::Vector2f(1536.0f, 768.0f));
@@ -44,16 +76,12 @@ int main() {
 	bg.setTexture(&bgTexture);
 	//****************************************************************
 
-	//***********************Floor************************************
-	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 200.0f), sf::Vector2f(300.0f, 200.0f)));
-	//****************************************************************
-
 	float deltaTime = 1.0f;
 	sf::Clock clock;
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
-		printf("%f %f\n", pos.x, pos.y);
+		//printf("%f %f\n", pos.x, pos.y);
 		bg.setPosition(pos.x-768, pos.y-384);
 		deltaTime = clock.restart().asSeconds();
 		if (deltaTime > 1.0f / 20.0f)
@@ -74,18 +102,20 @@ int main() {
 		}
 		
 		player.Update(deltaTime);
-
+		monster1.Updatem1(deltaTime);
 		sf::Vector2f direction;
 
-		for (Platform& platform : platforms) 
+		for (Platform& platform : platforms) {
 			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f))
 				player.OnCollistion(direction);
-		
+			//platform.GetCollider().CheckCollistionmon(monster1.GetCollider(), direction, 1.0f);
+		}
 		view.setCenter(player.GetPosition());
 		window.clear();
 		window.draw(bg);
 		window.setView(view);
 		player.Draw(window);
+		monster1.Draw(window);
 
 		for (Platform& platform : platforms)
 			platform.Draw(window);
