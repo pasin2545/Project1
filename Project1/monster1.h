@@ -2,6 +2,7 @@
 #include<SFML/Graphics.hpp>
 #include"Animation.h"
 #include"Collider.h"
+#include"Bullet.h"
 class monster1
 {
 public:
@@ -12,6 +13,14 @@ public:
 
 	sf::Vector2f GetPosition() { return bodym1.getPosition(); }
 	Collider GetCollider() { return Collider(bodym1); }
+
+	void checkColl(Bullet bullet) {
+		if (bullet.getRight() > bodym1.getPosition().x &&  
+			bullet.getTop()< bodym1.getPosition().y + bodym1.getSize().y
+			&& bullet.getBottom() > bodym1.getPosition().y) {
+			bodym1.setPosition(800.0f, 1000.0f);
+		}
+	}
 
 private:
 	sf::RectangleShape bodym1;

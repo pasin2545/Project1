@@ -1,5 +1,6 @@
 #include "player.h"
 #include "Animation.h"
+#include "Bullet.h"
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed, float jumpHeight):
 	animation(texture,imageCount,switchTime)
 {

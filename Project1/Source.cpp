@@ -6,6 +6,7 @@
 #include"monster1.h"
 #include"Platform.h"
 #include"Collider.h"
+#include"Bullet.h"
 
 static const float VIEW_HEIGHT = 768.0f;
 static const float VIEW_LENGTH = 1536.0f;
@@ -20,7 +21,9 @@ int main() {
 	sf::RenderWindow window(sf::VideoMode(1536, 768), "2D Game", sf::Style::Close | sf::Style::Close);
 	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_LENGTH, VIEW_HEIGHT));
 
-
+	sf::Texture BulletTexture;
+	std::vector<Bullet> bulletVec;
+	bool isFiring = false;
 
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("image.png");
@@ -56,6 +59,12 @@ int main() {
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6200.0f, -25.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8500.0f, -180.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -180.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9100.0f, -180.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -310.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9700.0f, -25.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10000.0f, -125.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10300.0f, -225.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10700.0f, -350.0f)));
 	//***************************************************************************************
 
 
@@ -64,7 +73,8 @@ int main() {
 	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(2350.0f, 200.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(5050.0f, 200.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(6450.0f, 200.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(2000.0f, 350.0f), sf::Vector2f(8250.0f, 200.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(2200.0f, 350.0f), sf::Vector2f(8350.0f, 200.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(2000.0f, 350.0f), sf::Vector2f(12000.0f, -375.0f)));
 	//***************************************************************************************
 
 	sf::Texture monster1Texture;
@@ -110,14 +120,38 @@ int main() {
 		for (Platform& platform : platforms) {
 			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f))
 				player.OnCollistion(direction);
-			//platform.GetCollider().CheckCollistionmon(monster1.GetCollider(), direction, 1.0f);
+			platform.GetCollider().CheckCollistionmon(monster1.GetCollider(), direction, 1.0f);
 		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			isFiring = true;
+		}
+		
 		view.setCenter(player.GetPosition());
 		window.clear();
 		window.draw(bg);
 		window.setView(view);
 		player.Draw(window);
 		monster1.Draw(window);
+		//*********************************Draw Bullet*************************************
+		if (isFiring == true) {
+			Bullet newBullet(sf::Vector2f(50, 5));
+			newBullet.setPos(sf::Vector2f(player.GetPosition().x, player.GetPosition().y));
+			if (player.faceRight == true) {
+				bulletVec.push_back(newBullet);
+			}
+			else {
+				bulletVec.
+			}
+			isFiring = false;
+		}
+		for (int i = 0; i < bulletVec.size(); i++) {
+			bulletVec[i].draw(window);
+			bulletVec[i].fire(3);
+		}
+		for (int i = 0; i < bulletVec.size(); i++) {
+			monster1.checkColl(bulletVec[i]);
+		}
+		//********************************************************************************
 
 		for (Platform& platform : platforms)
 			platform.Draw(window);
