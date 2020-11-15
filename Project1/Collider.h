@@ -6,6 +6,8 @@ public:
 	Collider(sf::RectangleShape& body);
 	~Collider();
 
+	bool CheckCollistionbull(Collider other, sf::Vector2f& direction, float push);
+
 	void Move(float dx, float dy) { body.move(dx, dy); }
 
 	bool CheckCollistionmon(Collider other, sf::Vector2f& direction, float push);

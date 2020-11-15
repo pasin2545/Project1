@@ -7,6 +7,7 @@
 #include"Platform.h"
 #include"Collider.h"
 #include"Bullet.h"
+#include"Bullet2.h"
 
 static const float VIEW_HEIGHT = 768.0f;
 static const float VIEW_LENGTH = 1536.0f;
@@ -22,14 +23,20 @@ int main() {
 	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_LENGTH, VIEW_HEIGHT));
 
 	sf::Texture BulletTexture;
-	std::vector<Bullet> bulletVec;
+	std::vector<Bullet> bulletVec1;
+	std::vector<Bullet2> bulletVec2;
 	bool isFiring = false;
+	Bullet newBullet1(&BulletTexture);
+	Bullet2 newBullet2(&BulletTexture);
 
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("image.png");
-	Player player(&playerTexture, sf::Vector2u(8, 6), 0.3f, 250.0f, 200.0f);
+	Player player(&playerTexture, sf::Vector2u(8, 6), 0.2f, 250.0f, 200.0f);
 
 	std::vector<Platform> platforms;
+
+	sf::Clock BULLET;
+	float bull;
 
 	//***********************Box*************************************************************
 	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f)));
@@ -94,6 +101,7 @@ int main() {
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
 		//printf("%f %f\n", pos.x, pos.y);
+		bull = BULLET.getElapsedTime().asMilliseconds();
 		bg.setPosition(pos.x-768, pos.y-384);
 		deltaTime = clock.restart().asSeconds();
 		if (deltaTime > 1.0f / 20.0f)
@@ -117,13 +125,28 @@ int main() {
 		monster1.Updatem1(deltaTime);
 		sf::Vector2f direction;
 
-		for (Platform& platform : platforms) {
-			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f))
-				player.OnCollistion(direction);
-			platform.GetCollider().CheckCollistionmon(monster1.GetCollider(), direction, 1.0f);
-		}
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bull>250) {
 			isFiring = true;
+			BULLET.restart();
+		}
+		for (Platform& platform : platforms) {
+			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f)) {
+				player.OnCollistion(direction);
+				}
+				platform.GetCollider().CheckCollistionmon(monster1.GetCollider(), direction, 1.0f);
+				
+				for (int i = 0; i < bulletVec1.size(); i++) {
+					for (Bullet& Bu : bulletVec1) {
+						platform.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+					}
+				}
+				for (int i = 0; i < bulletVec2.size(); i++) {
+					for (Bullet2& Bu2 : bulletVec2) {
+						platform.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
+					}
+				}
+			
 		}
 		
 		view.setCenter(player.GetPosition());
@@ -134,24 +157,33 @@ int main() {
 		monster1.Draw(window);
 		//*********************************Draw Bullet*************************************
 		if (isFiring == true) {
-			Bullet newBullet(sf::Vector2f(50, 5));
-			newBullet.setPos(sf::Vector2f(player.GetPosition().x, player.GetPosition().y));
 			if (player.faceRight == true) {
-				bulletVec.push_back(newBullet);
+				newBullet1.setPos(sf::Vector2f(player.GetPosition().x+100, player.GetPosition().y));
+				bulletVec1.push_back(newBullet1);
+				isFiring = false;
 			}
-			else {
-				bulletVec.
+			if (player.faceRight == false) {
+				newBullet2.setPos(sf::Vector2f(player.GetPosition().x-100, player.GetPosition().y));
+				bulletVec2.push_back(newBullet2);
+				isFiring = false;
 			}
-			isFiring = false;
 		}
-		for (int i = 0; i < bulletVec.size(); i++) {
-			bulletVec[i].draw(window);
-			bulletVec[i].fire(3);
-		}
-		for (int i = 0; i < bulletVec.size(); i++) {
-			monster1.checkColl(bulletVec[i]);
-		}
+			for (int i = 0; i < bulletVec1.size(); i++) {
+				bulletVec1[i].draw(window);
+				bulletVec1[i].fire(3);
+			}
+			for (int i = 0; i < bulletVec1.size(); i++) {
+				monster1.checkColl(bulletVec1[i]);
+			}
+			for (int i = 0; i < bulletVec2.size(); i++) {
+				bulletVec2[i].draw(window);
+				bulletVec2[i].fire(-3);
+			}
+			for (int i = 0; i < bulletVec2.size(); i++) {
+				monster1.checkColl(bulletVec2[i]);
+			}
 		//********************************************************************************
+
 
 		for (Platform& platform : platforms)
 			platform.Draw(window);

@@ -3,6 +3,7 @@
 #include"Animation.h"
 #include"Collider.h"
 #include"Bullet.h"
+#include"Bullet2.h"
 class monster1
 {
 public:
@@ -15,8 +16,16 @@ public:
 	Collider GetCollider() { return Collider(bodym1); }
 
 	void checkColl(Bullet bullet) {
-		if (bullet.getRight() > bodym1.getPosition().x &&  
-			bullet.getTop()< bodym1.getPosition().y + bodym1.getSize().y
+		if (bullet.getRight() > bodym1.getPosition().x &&
+			bullet.getTop() < bodym1.getPosition().y + bodym1.getSize().y
+			&& bullet.getBottom() > bodym1.getPosition().y) {
+			bodym1.setPosition(800.0f, 1000.0f);
+		}
+	}
+
+	void checkColl(Bullet2 bullet) {
+		if (bullet.getRight() > bodym1.getPosition().x &&
+			bullet.getTop() < bodym1.getPosition().y + bodym1.getSize().y
 			&& bullet.getBottom() > bodym1.getPosition().y) {
 			bodym1.setPosition(800.0f, 1000.0f);
 		}

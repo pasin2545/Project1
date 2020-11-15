@@ -16,7 +16,7 @@ void monster1::Updatem1(float deltatimem1) {
 	float ttmove = 0;
 	sf::Vector2f movement(0.0f, 0.0f);
 		//movement.x -= speedm1 * deltatimem1;
-	if (ttmove == -1.0f) {
+	if () {
 		chk = 1;
 		if (chk == 1) {
 			movement.x += 0.1;

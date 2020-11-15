@@ -15,6 +15,7 @@ public:
 	sf::Vector2f GetPosition() { return body.getPosition(); }
 	Collider GetCollider() { return Collider(body); }
 	bool faceRight;
+
 private:
 	sf::RectangleShape body;
 	Animation animation;
