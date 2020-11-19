@@ -39,6 +39,12 @@
     <ClCompile Include="Bullet2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="monster2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="monster3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -60,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Bullet2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="monster2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="monster3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

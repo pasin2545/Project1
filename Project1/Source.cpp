@@ -4,6 +4,8 @@
 #include"player.h"
 #include<vector>
 #include"monster1.h"
+#include"monster2.h"
+#include"monster3.h"
 #include"Platform.h"
 #include"Collider.h"
 #include"Bullet.h"
@@ -87,6 +89,12 @@ int main() {
 	sf::Texture monster1Texture;
 	monster1Texture.loadFromFile("monster1.png");
 	monster1 monster1(&monster1Texture, sf::Vector2u(5, 1), 0.3f, 200.0f);
+	sf::Texture monster2Texture;
+	monster2Texture.loadFromFile("monster2.png");
+	monster2 monster2(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
+	sf::Texture monster3Texture;
+	monster3Texture.loadFromFile("monster3.png");
+	monster3 monster3(&monster3Texture, sf::Vector2u(7, 1), 0.3f, 200.0f);
 
 	//***********************Background*******************************
 	sf::RectangleShape bg(sf::Vector2f(1536.0f, 768.0f));
@@ -123,6 +131,8 @@ int main() {
 
 		player.Update(deltaTime);
 		monster1.Updatem1(deltaTime);
+		monster2.Updatem2(deltaTime);
+		monster3.Updatem3(deltaTime);
 		sf::Vector2f direction;
 
 
@@ -134,19 +144,22 @@ int main() {
 			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f)) {
 				player.OnCollistion(direction);
 			}
-			platform.GetCollider().CheckCollistionmon(monster1.GetCollider(), direction, 1.0f);
 
 			for (int i = 0; i < bulletVec1.size(); i++) {
 				for (Bullet& Bu : bulletVec1) {
 					platform.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+					Bu.GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);	
+					monster1.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+				
 				}
 			}
 			for (int i = 0; i < bulletVec2.size(); i++) {
 				for (Bullet2& Bu2 : bulletVec2) {
 					platform.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
+					Bu2.GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);					
+					monster1.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
 				}
-			}
-
+			} 
 		}
 
 		view.setCenter(player.GetPosition());
@@ -155,6 +168,8 @@ int main() {
 		window.setView(view);
 		player.Draw(window);
 		monster1.Draw(window);
+		monster2.Draw(window);
+		monster3.Draw(window);
 		//*********************************Draw Bullet*************************************
 		if (isFiring == true) {
 			if (player.faceRight == true) {
@@ -172,15 +187,9 @@ int main() {
 			bulletVec1[i].draw(window);
 			bulletVec1[i].fire(3);
 		}
-		for (int i = 0; i < bulletVec1.size(); i++) {
-			monster1.checkColl(bulletVec1[i]);
-		}
 		for (int i = 0; i < bulletVec2.size(); i++) {
 			bulletVec2[i].draw(window);
 			bulletVec2[i].fire(-3);
-		}
-		for (int i = 0; i < bulletVec2.size(); i++) {
-			monster1.checkColl(bulletVec2[i]);
 		}
 		//********************************************************************************
 

@@ -15,19 +15,6 @@ public:
 	void fire(int speed) {
 		bullet2.move(speed, 0);
 	}
-
-	int getRight() {
-		return bullet2.getPosition().x + bullet2.getSize().x;
-	}
-	int getLeft() {
-		return bullet2.getPosition().x;
-	}
-	int getTop() {
-		return bullet2.getPosition().y;
-	}
-	int getBottom() {
-		return bullet2.getPosition().y + bullet2.getSize().y;
-	}
 	void draw(sf::RenderWindow& window) {
 		window.draw(bullet2);
 	}

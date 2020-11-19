@@ -29,7 +29,6 @@ void monster1::Updatem1(float deltatimem1) {
 		}
 	}
 
-	printf("%f\n", x);
 	rowm1 = 0;
 	if (chk == 0) {
 		faceRightm1 = true;
