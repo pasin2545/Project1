@@ -38,4 +38,3 @@ public:
 private:
 	sf::RectangleShape bullet2;
 };
-

@@ -15,7 +15,7 @@ static const float VIEW_LENGTH = 1536.0f;
 void ResizeView(const sf::RenderWindow& window, sf::View& view)
 {
 	float aspectRatio = float(window.getSize().x) / float(window.getSize().y);
-	view.setSize(VIEW_LENGTH * aspectRatio, VIEW_HEIGHT );
+	view.setSize(VIEW_LENGTH * aspectRatio, VIEW_HEIGHT);
 }
 
 int main() {
@@ -102,7 +102,7 @@ int main() {
 		sf::Vector2f pos = player.GetPosition();
 		//printf("%f %f\n", pos.x, pos.y);
 		bull = BULLET.getElapsedTime().asMilliseconds();
-		bg.setPosition(pos.x-768, pos.y-384);
+		bg.setPosition(pos.x - 768, pos.y - 384);
 		deltaTime = clock.restart().asSeconds();
 		if (deltaTime > 1.0f / 20.0f)
 			deltaTime = 1.0f / 20.0f;
@@ -120,35 +120,35 @@ int main() {
 				break;
 			}
 		}
-		
+
 		player.Update(deltaTime);
 		monster1.Updatem1(deltaTime);
 		sf::Vector2f direction;
 
-		
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bull>250) {
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bull > 250) {
 			isFiring = true;
 			BULLET.restart();
 		}
 		for (Platform& platform : platforms) {
 			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f)) {
 				player.OnCollistion(direction);
+			}
+			platform.GetCollider().CheckCollistionmon(monster1.GetCollider(), direction, 1.0f);
+
+			for (int i = 0; i < bulletVec1.size(); i++) {
+				for (Bullet& Bu : bulletVec1) {
+					platform.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
 				}
-				platform.GetCollider().CheckCollistionmon(monster1.GetCollider(), direction, 1.0f);
-				
-				for (int i = 0; i < bulletVec1.size(); i++) {
-					for (Bullet& Bu : bulletVec1) {
-						platform.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					}
+			}
+			for (int i = 0; i < bulletVec2.size(); i++) {
+				for (Bullet2& Bu2 : bulletVec2) {
+					platform.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
 				}
-				for (int i = 0; i < bulletVec2.size(); i++) {
-					for (Bullet2& Bu2 : bulletVec2) {
-						platform.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					}
-				}
-			
+			}
+
 		}
-		
+
 		view.setCenter(player.GetPosition());
 		window.clear();
 		window.draw(bg);
@@ -158,36 +158,36 @@ int main() {
 		//*********************************Draw Bullet*************************************
 		if (isFiring == true) {
 			if (player.faceRight == true) {
-				newBullet1.setPos(sf::Vector2f(player.GetPosition().x+100, player.GetPosition().y));
+				newBullet1.setPos(sf::Vector2f(player.GetPosition().x + 100, player.GetPosition().y));
 				bulletVec1.push_back(newBullet1);
 				isFiring = false;
 			}
 			if (player.faceRight == false) {
-				newBullet2.setPos(sf::Vector2f(player.GetPosition().x-100, player.GetPosition().y));
+				newBullet2.setPos(sf::Vector2f(player.GetPosition().x - 100, player.GetPosition().y));
 				bulletVec2.push_back(newBullet2);
 				isFiring = false;
 			}
 		}
-			for (int i = 0; i < bulletVec1.size(); i++) {
-				bulletVec1[i].draw(window);
-				bulletVec1[i].fire(3);
-			}
-			for (int i = 0; i < bulletVec1.size(); i++) {
-				monster1.checkColl(bulletVec1[i]);
-			}
-			for (int i = 0; i < bulletVec2.size(); i++) {
-				bulletVec2[i].draw(window);
-				bulletVec2[i].fire(-3);
-			}
-			for (int i = 0; i < bulletVec2.size(); i++) {
-				monster1.checkColl(bulletVec2[i]);
-			}
+		for (int i = 0; i < bulletVec1.size(); i++) {
+			bulletVec1[i].draw(window);
+			bulletVec1[i].fire(3);
+		}
+		for (int i = 0; i < bulletVec1.size(); i++) {
+			monster1.checkColl(bulletVec1[i]);
+		}
+		for (int i = 0; i < bulletVec2.size(); i++) {
+			bulletVec2[i].draw(window);
+			bulletVec2[i].fire(-3);
+		}
+		for (int i = 0; i < bulletVec2.size(); i++) {
+			monster1.checkColl(bulletVec2[i]);
+		}
 		//********************************************************************************
 
 
 		for (Platform& platform : platforms)
 			platform.Draw(window);
-		
+
 		window.display();
 	}
 	return 0;

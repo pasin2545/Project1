@@ -10,41 +10,33 @@ monster1::monster1(sf::Texture* texture, sf::Vector2u imageCount, float switchTi
 	bodym1.setPosition(1100.0f, -40.0f);
 	bodym1.setTexture(texture);
 }
-monster1::~monster1(){}
+
+monster1::~monster1() {}
 void monster1::Updatem1(float deltatimem1) {
-	int chk = 0;
-	float ttmove = 0;
+	float x = bodym1.getPosition().x;
+	float y = bodym1.getPosition().y;
 	sf::Vector2f movement(0.0f, 0.0f);
-		//movement.x -= speedm1 * deltatimem1;
-	if () {
-		chk = 1;
-		if (chk == 1) {
-			movement.x += 0.1;
-		}
-	}
-	else if(ttmove == 1.0f)
-	{
-		chk = 0;
-		if (chk == 0) {
-			movement.x -= 0.1;
+	if (chk == 0) {
+		movement.x -= speedm1 * deltatimem1;
+		if (x <= 700.0f) {
+			chk = 1;
 		}
 	}
 	if (chk == 1) {
-		movement.x += 0.1;
+		movement.x += speedm1 * deltatimem1;
+		if (x >= 1200.0f) {
+			chk = 0;
+		}
 	}
+
+	printf("%f\n", x);
+	rowm1 = 0;
 	if (chk == 0) {
-		movement.x -= 0.1;
+		faceRightm1 = true;
 	}
-	ttmove += movement.x;
-	printf("%f   ", movement.x);
-	printf("%f\n", ttmove);
-		rowm1 = 0;
-		if (movement.x < 0.0f) {
-			faceRightm1 = true;
-		}
-		else {
-			faceRightm1 = false;
-		}
+	else {
+		faceRightm1 = false;
+	}
 
 	animation.Update(rowm1, deltatimem1, faceRightm1);
 	bodym1.setTextureRect(animation.uvRect);

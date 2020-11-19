@@ -5,7 +5,7 @@ class Bullet
 {
 public:
 	Bullet(sf::Texture* texture) {
-		bullet.setSize(sf::Vector2f(100.0f,100.0f));
+		bullet.setSize(sf::Vector2f(100.0f, 100.0f));
 		bullet.setTexture(texture);
 		bullet.setOrigin(sf::Vector2f(100.0f, 100.0f) / 2.0f);
 	}
@@ -39,4 +39,3 @@ public:
 private:
 	sf::RectangleShape bullet;
 };
-
