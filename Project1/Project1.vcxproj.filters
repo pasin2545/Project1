@@ -45,6 +45,18 @@
     <ClCompile Include="monster3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="monster4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="monster5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="monster6.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="monster7.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h">
@@ -72,6 +84,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="monster3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="monster4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="monster5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="monster6.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="monster7.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

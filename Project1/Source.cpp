@@ -6,6 +6,10 @@
 #include"monster1.h"
 #include"monster2.h"
 #include"monster3.h"
+#include"monster4.h"
+#include"monster5.h"
+#include"monster6.h"
+#include"monster7.h"
 #include"Platform.h"
 #include"Collider.h"
 #include"Bullet.h"
@@ -95,6 +99,10 @@ int main() {
 	sf::Texture monster3Texture;
 	monster3Texture.loadFromFile("monster3.png");
 	monster3 monster3(&monster3Texture, sf::Vector2u(7, 1), 0.3f, 200.0f);
+	monster4 monster4(&monster1Texture, sf::Vector2u(5, 1), 0.3f, 200.0f);
+	monster5 monster5(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
+	monster6 monster6(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
+	monster7 monster7(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
 
 	//***********************Background*******************************
 	sf::RectangleShape bg(sf::Vector2f(1536.0f, 768.0f));
@@ -108,7 +116,6 @@ int main() {
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
-		//printf("%f %f\n", pos.x, pos.y);
 		bull = BULLET.getElapsedTime().asMilliseconds();
 		bg.setPosition(pos.x - 768, pos.y - 384);
 		deltaTime = clock.restart().asSeconds();
@@ -133,10 +140,14 @@ int main() {
 		monster1.Updatem1(deltaTime);
 		monster2.Updatem2(deltaTime);
 		monster3.Updatem3(deltaTime);
+		monster4.Updatem4(deltaTime);
+		monster5.Updatem5(deltaTime);
+		monster6.Updatem6(deltaTime);
+		monster7.Updatem7(deltaTime);
 		sf::Vector2f direction;
 
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bull > 250) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bull > 500) {
 			isFiring = true;
 			BULLET.restart();
 		}
@@ -148,16 +159,40 @@ int main() {
 			for (int i = 0; i < bulletVec1.size(); i++) {
 				for (Bullet& Bu : bulletVec1) {
 					platform.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					Bu.GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);	
+					Bu.GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);
+					Bu.GetCollider().CheckCollistionbullmon2(monster2.GetCollider(), direction);
+					Bu.GetCollider().CheckCollistionbullmon3(monster3.GetCollider(), direction);
+					Bu.GetCollider().CheckCollistionbullmon4(monster4.GetCollider(), direction);
+					Bu.GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
+					Bu.GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
+					Bu.GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
 					monster1.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+					monster2.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+					monster3.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+					monster4.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+					monster5.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+					monster6.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+					monster7.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
 				
 				}
 			}
 			for (int i = 0; i < bulletVec2.size(); i++) {
 				for (Bullet2& Bu2 : bulletVec2) {
 					platform.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					Bu2.GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);					
+					Bu2.GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);	
+					Bu2.GetCollider().CheckCollistionbullmon2(monster2.GetCollider(), direction);
+					Bu2.GetCollider().CheckCollistionbullmon3(monster3.GetCollider(), direction);
+					Bu2.GetCollider().CheckCollistionbullmon4(monster4.GetCollider(), direction);
+					Bu2.GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
+					Bu2.GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
+					Bu2.GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
 					monster1.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
+					monster2.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
+					monster3.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
+					monster4.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
+					monster5.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
+					monster6.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
+					monster7.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
 				}
 			} 
 		}
@@ -170,6 +205,10 @@ int main() {
 		monster1.Draw(window);
 		monster2.Draw(window);
 		monster3.Draw(window);
+		monster4.Draw(window);
+		monster5.Draw(window);
+		monster6.Draw(window);
+		monster7.Draw(window);
 		//*********************************Draw Bullet*************************************
 		if (isFiring == true) {
 			if (player.faceRight == true) {

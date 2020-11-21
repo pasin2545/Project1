@@ -152,6 +152,10 @@
     <ClCompile Include="monster1.cpp" />
     <ClCompile Include="monster2.cpp" />
     <ClCompile Include="monster3.cpp" />
+    <ClCompile Include="monster4.cpp" />
+    <ClCompile Include="monster5.cpp" />
+    <ClCompile Include="monster6.cpp" />
+    <ClCompile Include="monster7.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -164,6 +168,10 @@
     <ClInclude Include="monster1.h" />
     <ClInclude Include="monster2.h" />
     <ClInclude Include="monster3.h" />
+    <ClInclude Include="monster4.h" />
+    <ClInclude Include="monster5.h" />
+    <ClInclude Include="monster6.h" />
+    <ClInclude Include="monster7.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="player.h" />
   </ItemGroup>
