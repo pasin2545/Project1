@@ -31,7 +31,7 @@ bool Collider::CheckCollistionbull(Collider other, sf::Vector2f& direction, floa
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
 	if (intersectX < 0.0f && intersectY < 0.0f) {
-		other.SetPos(0.0f, 4000.0f);
+		other.SetPos(0.0f, 2000.0f);
 		return true;
 	}
 	return false;

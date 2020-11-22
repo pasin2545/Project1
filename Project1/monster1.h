@@ -2,8 +2,6 @@
 #include<SFML/Graphics.hpp>
 #include"Animation.h"
 #include"Collider.h"
-#include"Bullet.h"
-#include"Bullet2.h"
 class monster1
 {
 public:

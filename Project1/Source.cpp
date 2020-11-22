@@ -12,8 +12,12 @@
 #include"monster7.h"
 #include"Platform.h"
 #include"Collider.h"
-#include"Bullet.h"
-#include"Bullet2.h"
+
+
+int chk_1[6] = { 0 };
+int pst = 0;
+int pst1[6];
+clock_t start=-0.2,end = 0;
 
 static const float VIEW_HEIGHT = 768.0f;
 static const float VIEW_LENGTH = 1536.0f;
@@ -24,16 +28,30 @@ void ResizeView(const sf::RenderWindow& window, sf::View& view)
 	view.setSize(VIEW_LENGTH * aspectRatio, VIEW_HEIGHT);
 }
 
+void shoot(float, float);
+void shot(float,float);
+
+sf::Texture* BULLET;
+	class Bulleted {
+	public:
+		sf:: RectangleShape bullet;
+
+		void set(float x, float y)
+		{
+			bullet.setTexture(BULLET);
+			bullet.setSize(sf::Vector2f(30.0f, 30.0f));
+			bullet.setPosition(x, y);
+		}
+
+		sf::Vector2f GetPosition() { return bullet.getPosition(); }
+		Collider GetCollider() { return Collider(bullet); }
+	};
+
+	Bulleted bullet[6];
+
 int main() {
 	sf::RenderWindow window(sf::VideoMode(1536, 768), "2D Game", sf::Style::Close | sf::Style::Close);
 	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_LENGTH, VIEW_HEIGHT));
-
-	sf::Texture BulletTexture;
-	std::vector<Bullet> bulletVec1;
-	std::vector<Bullet2> bulletVec2;
-	bool isFiring = false;
-	Bullet newBullet1(&BulletTexture);
-	Bullet2 newBullet2(&BulletTexture);
 
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("image.png");
@@ -41,8 +59,6 @@ int main() {
 
 	std::vector<Platform> platforms;
 
-	sf::Clock BULLET;
-	float bull;
 
 	//***********************Box*************************************************************
 	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f)));
@@ -116,7 +132,16 @@ int main() {
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
-		bull = BULLET.getElapsedTime().asMilliseconds();
+		
+		if (player.faceRight == false) {
+			pst = 1;
+		}
+		if (player.faceRight == true) {
+			pst = 2;
+		}
+
+		shoot(pos.x, pos.y);
+		shot(pos.x, pos.y);
 		bg.setPosition(pos.x - 768, pos.y - 384);
 		deltaTime = clock.restart().asSeconds();
 		if (deltaTime > 1.0f / 20.0f)
@@ -125,6 +150,7 @@ int main() {
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
+			
 			switch (evnt.type)
 			{
 			case sf::Event::Closed:
@@ -146,61 +172,40 @@ int main() {
 		monster7.Updatem7(deltaTime);
 		sf::Vector2f direction;
 
-
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && bull > 500) {
-			isFiring = true;
-			BULLET.restart();
-		}
 		for (Platform& platform : platforms) {
 			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f)) {
 				player.OnCollistion(direction);
 			}
 
-			for (int i = 0; i < bulletVec1.size(); i++) {
-				for (Bullet& Bu : bulletVec1) {
-					platform.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					Bu.GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);
-					Bu.GetCollider().CheckCollistionbullmon2(monster2.GetCollider(), direction);
-					Bu.GetCollider().CheckCollistionbullmon3(monster3.GetCollider(), direction);
-					Bu.GetCollider().CheckCollistionbullmon4(monster4.GetCollider(), direction);
-					Bu.GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
-					Bu.GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
-					Bu.GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
-					monster1.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					monster2.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					monster3.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					monster4.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					monster5.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					monster6.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
-					monster7.GetCollider().CheckCollistionbull(Bu.GetCollider(), direction, 1.0f);
+			for (int i = 0; i < 6; i++) {
+					platform.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
+					bullet[i].GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);
+					bullet[i].GetCollider().CheckCollistionbullmon2(monster2.GetCollider(), direction);
+					bullet[i].GetCollider().CheckCollistionbullmon3(monster3.GetCollider(), direction);
+					bullet[i].GetCollider().CheckCollistionbullmon4(monster4.GetCollider(), direction);
+					bullet[i].GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
+					bullet[i].GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
+					bullet[i].GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
+					monster1.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
+					monster2.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
+					monster3.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
+					monster4.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
+					monster5.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
+					monster6.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
+					monster7.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
 				
 				}
-			}
-			for (int i = 0; i < bulletVec2.size(); i++) {
-				for (Bullet2& Bu2 : bulletVec2) {
-					platform.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					Bu2.GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);	
-					Bu2.GetCollider().CheckCollistionbullmon2(monster2.GetCollider(), direction);
-					Bu2.GetCollider().CheckCollistionbullmon3(monster3.GetCollider(), direction);
-					Bu2.GetCollider().CheckCollistionbullmon4(monster4.GetCollider(), direction);
-					Bu2.GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
-					Bu2.GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
-					Bu2.GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
-					monster1.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					monster2.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					monster3.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					monster4.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					monster5.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					monster6.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-					monster7.GetCollider().CheckCollistionbull(Bu2.GetCollider(), direction, 1.0f);
-				}
-			} 
 		}
 
 		view.setCenter(player.GetPosition());
 		window.clear();
 		window.draw(bg);
 		window.setView(view);
+		for (int i = 0; i < 6; i++) {
+			if (chk_1[i] == 1) {
+				window.draw(bullet[i].bullet);
+			}
+		}
 		player.Draw(window);
 		monster1.Draw(window);
 		monster2.Draw(window);
@@ -209,28 +214,6 @@ int main() {
 		monster5.Draw(window);
 		monster6.Draw(window);
 		monster7.Draw(window);
-		//*********************************Draw Bullet*************************************
-		if (isFiring == true) {
-			if (player.faceRight == true) {
-				newBullet1.setPos(sf::Vector2f(player.GetPosition().x + 100, player.GetPosition().y));
-				bulletVec1.push_back(newBullet1);
-				isFiring = false;
-			}
-			if (player.faceRight == false) {
-				newBullet2.setPos(sf::Vector2f(player.GetPosition().x - 100, player.GetPosition().y));
-				bulletVec2.push_back(newBullet2);
-				isFiring = false;
-			}
-		}
-		for (int i = 0; i < bulletVec1.size(); i++) {
-			bulletVec1[i].draw(window);
-			bulletVec1[i].fire(3);
-		}
-		for (int i = 0; i < bulletVec2.size(); i++) {
-			bulletVec2[i].draw(window);
-			bulletVec2[i].fire(-3);
-		}
-		//********************************************************************************
 
 
 		for (Platform& platform : platforms)
@@ -239,4 +222,42 @@ int main() {
 		window.display();
 	}
 	return 0;
+}
+
+void shoot(float x, float y) {
+	end = clock();
+	float dif = (float)(end - start) / CLOCKS_PER_SEC;
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&& dif >0.5) {
+		for (int i = 0; i < 6; i++) {
+			if (chk_1[i] == 0) {
+				if (pst == 1) {
+					bullet[i].set(x - 20.0f, y + 30.0f);
+				}
+				if (pst == 2) {
+					bullet[i].set(x + 60.0f, y + 30.0f);
+				}
+				pst1[i] = pst;
+				chk_1[i] = 1;
+				start = clock();
+				break;
+			}
+		}
+	}
+}
+
+void shot(float x, float y) {
+	for (int i = 0; i < 6; i++) {
+		if (chk_1[i] == 1) {
+			float speed = 1;
+			if (pst1[i] == 1) {
+				bullet[i].bullet.move(-speed, 0);
+			}
+			if (pst1[i] == 2) {
+				bullet[i].bullet.move(speed, 0);
+			}
+			if (bullet[i].bullet.getPosition().x < x - 1920 || bullet[i].bullet.getPosition().x > x + 1920) {
+				chk_1[i] = 0;
+			}
+		}
+	}
 }

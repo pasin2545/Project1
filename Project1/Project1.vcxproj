@@ -146,8 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Bullet2.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="monster1.cpp" />
     <ClCompile Include="monster2.cpp" />
@@ -162,8 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="Bullet2.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="monster1.h" />
     <ClInclude Include="monster2.h" />
