@@ -17,6 +17,8 @@
 int chk_1[6] = { 0 };
 int pst = 0;
 int pst1[6];
+int chkbox = 0;
+
 clock_t start=-0.2,end = 0;
 
 static const float VIEW_HEIGHT = 768.0f;
@@ -106,6 +108,11 @@ int main() {
 	platforms.push_back(Platform(nullptr, sf::Vector2f(2000.0f, 350.0f), sf::Vector2f(12000.0f, -375.0f)));
 	//***************************************************************************************
 
+	if (chkbox ==1) {
+		printf("xxxxx\n");
+		platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(11000.0f, -725.0f)));
+	}
+
 	sf::Texture monster1Texture;
 	monster1Texture.loadFromFile("monster1.png");
 	monster1 monster1(&monster1Texture, sf::Vector2u(5, 1), 0.3f, 200.0f);
@@ -132,6 +139,13 @@ int main() {
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
+		printf("%f\n", pos.x);
+		//*****************************************BossArea*********************************************
+		if (pos.x > 11500.0f) {
+			chkbox = 1;
+			printf("%d\n", chkbox);
+		}
+		//************************************************************************************************
 		
 		if (player.faceRight == false) {
 			pst = 1;
@@ -218,7 +232,6 @@ int main() {
 
 		for (Platform& platform : platforms)
 			platform.Draw(window);
-
 		window.display();
 	}
 	return 0;
@@ -248,7 +261,7 @@ void shoot(float x, float y) {
 void shot(float x, float y) {
 	for (int i = 0; i < 6; i++) {
 		if (chk_1[i] == 1) {
-			float speed = 1;
+			float speed = 3.0f;
 			if (pst1[i] == 1) {
 				bullet[i].bullet.move(-speed, 0);
 			}

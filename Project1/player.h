@@ -15,14 +15,12 @@ public:
 	sf::Vector2f GetPosition() { return body.getPosition(); }
 	Collider GetCollider() { return Collider(body); }
 	bool faceRight;
-
+	
 private:
 	sf::RectangleShape body;
 	Animation animation;
 	unsigned int row;
 	float speed;
-	
-
 	sf::Vector2f velocity;
 	bool canJump;
 	float jumpHeight;
