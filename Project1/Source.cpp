@@ -17,7 +17,6 @@
 int chk_1[6] = { 0 };
 int pst = 0;
 int pst1[6];
-int chkbox = 0;
 
 clock_t start=-0.2,end = 0;
 
@@ -96,6 +95,7 @@ int main() {
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10000.0f, -125.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10300.0f, -225.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10700.0f, -350.0f)));
+	
 	//***************************************************************************************
 
 
@@ -107,11 +107,9 @@ int main() {
 	platforms.push_back(Platform(nullptr, sf::Vector2f(2200.0f, 350.0f), sf::Vector2f(8350.0f, 200.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(2000.0f, 350.0f), sf::Vector2f(12000.0f, -375.0f)));
 	//***************************************************************************************
-
-	if (chkbox ==1) {
-		printf("xxxxx\n");
-		platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(11000.0f, -725.0f)));
-	}
+	
+	platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(11200.0f, -725.0f)));
+	platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(12850.0f, -725.0f)));
 
 	sf::Texture monster1Texture;
 	monster1Texture.loadFromFile("monster1.png");
@@ -140,12 +138,6 @@ int main() {
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
 		printf("%f\n", pos.x);
-		//*****************************************BossArea*********************************************
-		if (pos.x > 11500.0f) {
-			chkbox = 1;
-			printf("%d\n", chkbox);
-		}
-		//************************************************************************************************
 		
 		if (player.faceRight == false) {
 			pst = 1;
@@ -186,33 +178,40 @@ int main() {
 		monster7.Updatem7(deltaTime);
 		sf::Vector2f direction;
 
-		for (Platform& platform : platforms) {
-			if (platform.GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f)) {
-				player.OnCollistion(direction);
-			}
+		int v = 0;
+		if (player.GetPosition().x > 11400)
+			v = 0;
+		else v = 2;
 
-			for (int i = 0; i < 6; i++) {
-					platform.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
-					bullet[i].GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);
-					bullet[i].GetCollider().CheckCollistionbullmon2(monster2.GetCollider(), direction);
-					bullet[i].GetCollider().CheckCollistionbullmon3(monster3.GetCollider(), direction);
-					bullet[i].GetCollider().CheckCollistionbullmon4(monster4.GetCollider(), direction);
-					bullet[i].GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
-					bullet[i].GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
-					bullet[i].GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
-					monster1.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
-					monster2.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
-					monster3.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
-					monster4.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
-					monster5.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
-					monster6.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
-					monster7.GetCollider().CheckCollistionbull(bullet[i].GetCollider(), direction, 1.0f);
-				
-				}
+		for (int i = 0; i < platforms.size() - v; i++)
+		{
+			if (platforms[i].GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f))
+				player.OnCollistion(direction);
+			platforms[i].GetCollider().CheckCollistion(player.GetCollider(), direction, 1.0f);
+
+			for (int j = 0; j < 6; j++) {
+				platforms[i].GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+				bullet[j].GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);
+				bullet[j].GetCollider().CheckCollistionbullmon2(monster2.GetCollider(), direction);
+				bullet[j].GetCollider().CheckCollistionbullmon3(monster3.GetCollider(), direction);
+				bullet[j].GetCollider().CheckCollistionbullmon4(monster4.GetCollider(), direction);
+				bullet[j].GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
+				bullet[j].GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
+				bullet[j].GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
+				monster1.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+				monster2.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+				monster3.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+				monster4.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+				monster5.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+				monster6.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+				monster7.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+
+			}
 		}
 
 		view.setCenter(player.GetPosition());
 		window.clear();
+
 		window.draw(bg);
 		window.setView(view);
 		for (int i = 0; i < 6; i++) {
@@ -229,9 +228,13 @@ int main() {
 		monster6.Draw(window);
 		monster7.Draw(window);
 
+		for (int i = 0; i < platforms.size() - v; i++)
+		{
+			platforms[i].Draw(window);
+		}
 
-		for (Platform& platform : platforms)
-			platform.Draw(window);
+		/*for (Platform& platform : platforms)
+			platform.Draw(window);*/
 		window.display();
 	}
 	return 0;
