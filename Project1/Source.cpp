@@ -12,6 +12,7 @@
 #include"monster7.h"
 #include"Platform.h"
 #include"Collider.h"
+#include"Boss.h"
 
 
 int chk_1[6] = { 0 };
@@ -95,7 +96,6 @@ int main() {
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10000.0f, -125.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10300.0f, -225.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10700.0f, -350.0f)));
-	
 	//***************************************************************************************
 
 
@@ -108,8 +108,10 @@ int main() {
 	platforms.push_back(Platform(nullptr, sf::Vector2f(2000.0f, 350.0f), sf::Vector2f(12000.0f, -375.0f)));
 	//***************************************************************************************
 	
+	//**************************************Tower**********************************************************
 	platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(11200.0f, -725.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(12850.0f, -725.0f)));
+	//*****************************************************************************************************
 
 	sf::Texture monster1Texture;
 	monster1Texture.loadFromFile("monster1.png");
@@ -124,6 +126,9 @@ int main() {
 	monster5 monster5(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
 	monster6 monster6(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
 	monster7 monster7(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
+	sf::Texture BossTexture;
+	BossTexture.loadFromFile("Boss.png");
+	Boss Boss(&BossTexture, sf::Vector2u(6, 1), 0.3f, 200.0f);
 
 	//***********************Background*******************************
 	sf::RectangleShape bg(sf::Vector2f(1536.0f, 768.0f));
@@ -134,6 +139,8 @@ int main() {
 
 	float deltaTime = 1.0f;
 	sf::Clock clock;
+	float bosshit;
+	sf::Clock bossht;
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
@@ -176,11 +183,14 @@ int main() {
 		monster5.Updatem5(deltaTime);
 		monster6.Updatem6(deltaTime);
 		monster7.Updatem7(deltaTime);
+		//Boss.UpdateBoss1(deltaTime);
 		sf::Vector2f direction;
 
 		int v = 0;
-		if (player.GetPosition().x > 11400)
+		if (player.GetPosition().x > 11400) {
+			bosshit = bossht.getElapsedTime().asMilliseconds();
 			v = 0;
+		}
 		else v = 2;
 
 		for (int i = 0; i < platforms.size() - v; i++)
@@ -205,7 +215,6 @@ int main() {
 				monster5.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 				monster6.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 				monster7.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
-
 			}
 		}
 
@@ -227,14 +236,13 @@ int main() {
 		monster5.Draw(window);
 		monster6.Draw(window);
 		monster7.Draw(window);
+		Boss.Draw(window);
 
 		for (int i = 0; i < platforms.size() - v; i++)
 		{
 			platforms[i].Draw(window);
 		}
 
-		/*for (Platform& platform : platforms)
-			platform.Draw(window);*/
 		window.display();
 	}
 	return 0;
@@ -277,3 +285,4 @@ void shot(float x, float y) {
 		}
 	}
 }
+

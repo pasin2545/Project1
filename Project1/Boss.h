@@ -7,7 +7,7 @@ class Boss
 public:
 	Boss(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed);
 	~Boss();
-	void UpdateBoss(float deltatimem1);
+	void UpdateBoss1(float deltatimem1);
 	void Draw(sf::RenderWindow& window);
 
 	sf::Vector2f GetPosition() { return bodyBoss.getPosition(); }
