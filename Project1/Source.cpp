@@ -13,11 +13,15 @@
 #include"Platform.h"
 #include"Collider.h"
 #include"Boss.h"
+#include"Chest.h"
 
 
 int chk_1[6] = { 0 };
 int pst = 0;
 int pst1[6];
+
+int chksup_1[1] = { 0 };
+int pst1sup[1];
 
 clock_t start=-0.2,end = 0;
 
@@ -30,25 +34,51 @@ void ResizeView(const sf::RenderWindow& window, sf::View& view)
 	view.setSize(VIEW_LENGTH * aspectRatio, VIEW_HEIGHT);
 }
 
+sf::Texture ChestTexture;
+Chest chest(&ChestTexture);
+
 void shoot(float, float);
 void shot(float,float);
+void shootsuper(float, float);
+void shotsuper(float, float);
 
 sf::Texture* BULLET;
+sf::Texture* superBULLET;
 	class Bulleted {
 	public:
 		sf:: RectangleShape bullet;
 
 		void set(float x, float y)
 		{
-			bullet.setTexture(BULLET);
-			bullet.setSize(sf::Vector2f(30.0f, 30.0f));
-			bullet.setPosition(x, y);
+				bullet.setTexture(BULLET);
+				bullet.setSize(sf::Vector2f(30.0f, 30.0f));
+				bullet.setPosition(x, y);
 		}
 
 		sf::Vector2f GetPosition() { return bullet.getPosition(); }
 		Collider GetCollider() { return Collider(bullet); }
+
 	};
 
+	class superBulleted {
+	public:
+		sf::RectangleShape superbullet;
+
+		void set(float x, float y)
+		{
+			superbullet.setTexture(superBULLET);
+			superbullet.setSize(sf::Vector2f(50.0f, 50.0f));
+			superbullet.setPosition(x, y);
+		}
+
+		sf::Vector2f GetPosition() { return superbullet.getPosition(); }
+		Collider GetCollider() { return Collider(superbullet); }
+
+	};
+
+
+
+	superBulleted superbullet[1];
 	Bulleted bullet[6];
 
 int main() {
@@ -144,8 +174,8 @@ int main() {
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
-		printf("%f\n", pos.x);
-		
+		//printf("%f\n", pos.x);
+
 		if (player.faceRight == false) {
 			pst = 1;
 		}
@@ -155,6 +185,8 @@ int main() {
 
 		shoot(pos.x, pos.y);
 		shot(pos.x, pos.y);
+		shootsuper(pos.x, pos.y);
+		shotsuper(pos.x, pos.y);
 		bg.setPosition(pos.x - 768, pos.y - 384);
 		deltaTime = clock.restart().asSeconds();
 		if (deltaTime > 1.0f / 20.0f)
@@ -163,7 +195,7 @@ int main() {
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
-			
+
 			switch (evnt.type)
 			{
 			case sf::Event::Closed:
@@ -183,11 +215,11 @@ int main() {
 		monster5.Updatem5(deltaTime);
 		monster6.Updatem6(deltaTime);
 		monster7.Updatem7(deltaTime);
-		//Boss.UpdateBoss1(deltaTime);
+		Boss.UpdateBoss1(deltaTime);
 		sf::Vector2f direction;
 
 		int v = 0;
-		if (player.GetPosition().x > 11400) {
+		if (player.GetPosition().x > 11200) {
 			bosshit = bossht.getElapsedTime().asMilliseconds();
 			v = 0;
 		}
@@ -208,7 +240,7 @@ int main() {
 				bullet[j].GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
 				bullet[j].GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
 				bullet[j].GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
-				monster1.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
+				monster1.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);				
 				monster2.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 				monster3.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 				monster4.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
@@ -217,7 +249,13 @@ int main() {
 				monster7.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 			}
 		}
-
+		//*************************************************************************************************************************
+		/*if (.monster1_die == true) {
+			chest.Update();
+		}*/
+		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && chest.GetCollider().CheckCollistionChest(player.GetCollider())) {
+				chest.randitem();
+		}
 		view.setCenter(player.GetPosition());
 		window.clear();
 
@@ -228,6 +266,14 @@ int main() {
 				window.draw(bullet[i].bullet);
 			}
 		}
+		if (chest.use_superpower == true) {
+			for (int i = 0; i < 1; i++) {
+				if (chksup_1[i] == 1) {
+					window.draw(superbullet[i].superbullet);
+				}
+			}
+		}
+		
 		player.Draw(window);
 		monster1.Draw(window);
 		monster2.Draw(window);
@@ -237,7 +283,7 @@ int main() {
 		monster6.Draw(window);
 		monster7.Draw(window);
 		Boss.Draw(window);
-
+		Boss.DrawBR1(window);
 		for (int i = 0; i < platforms.size() - v; i++)
 		{
 			platforms[i].Draw(window);
@@ -281,8 +327,53 @@ void shot(float x, float y) {
 			}
 			if (bullet[i].bullet.getPosition().x < x - 1920 || bullet[i].bullet.getPosition().x > x + 1920) {
 				chk_1[i] = 0;
+
 			}
 		}
 	}
 }
+
+void shootsuper(float x, float y) {
+	end = clock();
+	float dif = (float)(end - start) / CLOCKS_PER_SEC;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && dif > 0.5 && chest.superPower == true) {
+		chest.use_superpower == true;
+		for (int i = 0; i < 1; i++) {
+			if (chksup_1[i] == 0) {
+				if (pst == 1) {
+					superbullet[i].set(x - 20.0f, y + 30.0f);
+				}
+				if (pst == 2) {
+					superbullet[i].set(x + 60.0f, y + 30.0f);
+				}
+				pst1sup[i] = pst;
+				chksup_1[i] = 1;
+				chest.superPower == false;
+				start = clock();
+				break;
+			}
+		}
+	}
+}
+
+void shotsuper(float x, float y) {
+	if (chest.use_superpower == true) {
+		for (int i = 0; i < 1; i++) {
+			if (chksup_1[i] == 1) {
+				float speed = 1.0f;
+				if (pst1sup[i] == 1) {
+					superbullet[i].superbullet.move(-speed, 0);
+				}
+				if (pst1sup[i] == 2) {
+					superbullet[i].superbullet.move(speed, 0);
+				}
+				if (superbullet[i].superbullet.getPosition().x < x - 1920 || superbullet[i].superbullet.getPosition().x > x + 1920) {
+					chksup_1[i] = 0;
+					chest.use_superpower == false;
+				}
+			}
+		}
+	}
+}
+
 

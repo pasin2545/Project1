@@ -20,4 +20,5 @@ private:
 	float speedm1;
 	bool faceRightm1;
 	int chk = 0;
+
 };

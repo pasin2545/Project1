@@ -1,4 +1,8 @@
 #include "monster1.h"
+#include"Chest.h"
+
+int monster1hp = 2;
+bool i = false;
 monster1::monster1(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed) :
 	animation(texture, imageCount, switchTime)
 {
@@ -28,6 +32,9 @@ void monster1::Updatem1(float deltatimem1) {
 			chk = 0;
 		}
 	}
+	if (chk == 2) {
+		bodym1.setPosition(sf::Vector2f(0.0f, 1000.0f));
+	}
 
 	rowm1 = 0;
 	if (chk == 0) {
@@ -45,5 +52,4 @@ void monster1::Updatem1(float deltatimem1) {
 void monster1::Draw(sf::RenderWindow& window)
 {
 	window.draw(bodym1);
-
 }

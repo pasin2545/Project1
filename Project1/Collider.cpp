@@ -1,5 +1,4 @@
 #include "Collider.h"
-#include "monster1.h"
 int hpmon1 = 2;
 int hpmon2 = 3;
 int hpmon3 = 2;
@@ -51,10 +50,10 @@ bool Collider::CheckCollistionbullmon(Collider other, sf::Vector2f& direction)
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
 	if (intersectX < 0.0f && intersectY < 0.0f) {
-		printf("%d\n", hpmon1);
 		hpmon1 -= 1;
 		if (hpmon1 == 0) {
-			other.Move(0.0f, 1000.0f);
+			other.SetPos(0.0f, 1000.0f);
+			monster1_die = true;
 		}
 		return true;
 	}
@@ -79,6 +78,7 @@ bool Collider::CheckCollistionbullmon2(Collider other, sf::Vector2f& direction)
 		hpmon2 -= 1;
 		if (hpmon2 == 0) {
 			other.SetPos(0.0f,1000.0f);
+			monster2_die = true;
 		}
 		return true;
 	}
@@ -125,6 +125,7 @@ bool Collider::CheckCollistionbullmon4(Collider other, sf::Vector2f& direction)
 		hpmon4 -= 1;
 		if (hpmon4 == 0) {
 			other.SetPos(0.0f, 1000.0f);
+			monster4_die = true;
 		}
 		return true;
 	}
@@ -148,6 +149,7 @@ bool Collider::CheckCollistionbullmon5(Collider other, sf::Vector2f& direction)
 		hpmon5 -= 1;
 		if (hpmon5 == 0) {
 			other.SetPos(0.0f, 1000.0f);
+			monster5_die = true;
 		}
 		return true;
 	}
@@ -171,6 +173,7 @@ bool Collider::CheckCollistionbullmon6(Collider other, sf::Vector2f& direction)
 		hpmon6 -= 1;
 		if (hpmon6 == 0) {
 			other.SetPos(0.0f, 1000.0f);
+			monster6_die = true;
 		}
 		return true;
 	}
@@ -194,7 +197,26 @@ bool Collider::CheckCollistionbullmon7(Collider other, sf::Vector2f& direction)
 		hpmon7 -= 1;
 		if (hpmon7 == 0) {
 			other.SetPos(0.0f, 1000.0f);
+			monster7_die = true;
 		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionChest(Collider other)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
 		return true;
 	}
 	return false;
