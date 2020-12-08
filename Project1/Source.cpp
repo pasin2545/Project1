@@ -25,16 +25,23 @@ int pst1[6];
 int chksup_1[1] = { 0 };
 int pst1sup[1];
 
+int chkboss_1[3] = { 0 };
+
 bool chest_open = false;
-bool chest2_open = false;
 bool superPower = false;
 bool use_superpower = false;
 bool chest_dis1 = false;
 bool chest_dis2 = false;
+bool chest_dis3 = false;
 bool hp_canDown = true;
 bool BurnTime = true;
 bool Potion = false;
 
+bool EndBossAction = true;
+bool ActBoss1 = false;
+bool ActBoss2 = false;
+bool ActBoss3 = false;
+bool ActBoss4 = false;
 
 int PlayerHP = 3;
 int hpmon1 = 2;
@@ -47,9 +54,13 @@ int hpmon7 = 3;
 int hpBoss = 25;
 int score = 0;
 int TM=0;
+int PTM = 0;
 
+int randomActBoss;
+float chkTM_Frame1;
 
 clock_t start=-0.2,end = 0;
+clock_t startboss = -0.2, endboss = 0;
 
 static const float VIEW_HEIGHT = 768.0f;
 static const float VIEW_LENGTH = 1536.0f;
@@ -66,18 +77,25 @@ void shot(float,float);
 void shootsuper(float, float);
 void shotsuper(float, float);
 void HitTimecount();
+void HealTimecount();
 void UsePotion();
+void shootBullBossR1(float, float);
+void shotBullBossR1(float, float);
+void ActionBoss1(float, float);
+void randActBoss();
+void ActionBoss2();
 
 
+//***********************************************class PlayerBullet**********************************
 sf::Texture* BULLET;
 sf::Texture* superBULLET;
 
 	class Bulleted {
 	public:
 		sf:: RectangleShape bullet;
-
 		void set(float x, float y)
 		{
+			BULLET->loadFromFile("");
 				bullet.setTexture(BULLET);
 				bullet.setSize(sf::Vector2f(30.0f, 30.0f));
 				bullet.setPosition(x, y);
@@ -103,7 +121,27 @@ sf::Texture* superBULLET;
 		Collider GetCollider() { return Collider(superbullet); }
 
 	};
+//********************************************************************************************
+	
+//****************************************class Bossbullet******************************************
+	sf::Texture* BULLETBOSS;
+	class BulletBoss {
+	public:
+		sf::RectangleShape bulletboss1;
 
+		void set(float x, float y)
+		{
+			bulletboss1.setTexture(BULLETBOSS);
+			bulletboss1.setSize(sf::Vector2f(50.0f, 50.0f));
+			bulletboss1.setPosition(x, y);
+		}
+
+		sf::Vector2f GetPosition() { return bulletboss1.getPosition(); }
+		Collider GetCollider() { return Collider(bulletboss1); }
+	};
+//********************************************************************************************
+
+//*******************************************class Chest********************************************************
 	class Chest
 	{
 	public:
@@ -120,13 +158,44 @@ sf::Texture* superBULLET;
 	private:
 		int random_item;
 	};
+//**************************************************************************************************************
+
+//*************************************************Class Boss2*******************************************************
+	class Boss2
+	{
+	public:
+		Boss2(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed);
+		~Boss2();
+		void UpdateBoss1(float deltatimem1);
+
+		void Draw(sf::RenderWindow& window);
+
+		sf::Vector2f GetPosition() { return bodyBoss.getPosition(); }
+		Collider GetCollider() { return Collider(bodyBoss); }
+
+	private:
+		sf::RectangleShape bodyBoss;
+		Animation animation;
+		unsigned int rowboss;
+		float speedboss;
+		bool faceRightboss;
+	};
+//*******************************************************************************************************************
 
 	superBulleted superbullet[1];
 	Bulleted bullet[6];
+	BulletBoss bulletboss1[3];
 
 	float hitchk;
 	sf::Clock crash;
+	float Potionchk;
+	sf::Clock Heal;
+	float clockbpn;
+	sf::Clock Bullpn;
+	float Framechk;
+	sf::Clock FrameTM;
 
+//============================================================================== main ======================================================
 int main() {
 	sf::RenderWindow window(sf::VideoMode(1536, 768), "2D Game", sf::Style::Close | sf::Style::Close);
 	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_LENGTH, VIEW_HEIGHT));
@@ -203,12 +272,16 @@ int main() {
 	monster6 monster6(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
 	monster7 monster7(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
 	sf::Texture BossTexture;
+	sf::Texture BossTexture2;
 	BossTexture.loadFromFile("Boss.png");
-	Boss Boss(&BossTexture, sf::Vector2u(6, 1), 0.3f, 200.0f);
+	BossTexture2.loadFromFile("Boss2.png");
+	Boss Boss1(&BossTexture, sf::Vector2u(6, 1), 0.3f, 200.0f);
+	Boss2 Boss2(&BossTexture2, sf::Vector2u(11, 1), 0.3f, 200.0f);
 	sf::Texture ChestTexture;
 	ChestTexture.loadFromFile("Chestfix.png");
 	Chest chest(&ChestTexture, sf::Vector2f(1100.0f, -20.0f));
-	Chest chest2(&ChestTexture, sf::Vector2f(800.0f, -20.0f));
+	Chest chest2(&ChestTexture, sf::Vector2f(4900.0f, -20.0f));
+	Chest chest3(&ChestTexture, sf::Vector2f(8770.0f, -405.0f));
 
 	sf::Font font;
 	font.loadFromFile("Silver.ttf");
@@ -243,6 +316,10 @@ int main() {
 	bg.setTexture(&bgTexture);
 	//****************************************************************
 
+	sf::RectangleShape frame;
+	frame.setSize(sf::Vector2f(300, 200));
+	frame.setPosition(sf::Vector2f(12000.0f, -775.0f));
+
 	float deltaTime = 1.0f;
 	sf::Clock clock;
 	float bosshit;
@@ -261,12 +338,30 @@ int main() {
 
 		shoot(pos.x, pos.y);
 		shot(pos.x, pos.y);
-		//printf("%d", superPower);
 		if (superPower == true) {
 			shootsuper(pos.x, pos.y);
 			shotsuper(pos.x, pos.y);
 		}
+
+		if (player.GetPosition().x > 11200) {
+			clockbpn = Bullpn.getElapsedTime().asSeconds();
+			Framechk = FrameTM.getElapsedTime().asMilliseconds();
+			if (EndBossAction == true) {
+				randActBoss();
+			}
+				if (ActBoss1 == true) {
+					ActionBoss1(12200.0f, -1025.0f);
+				}
+				if (ActBoss2 == true) {
+					ActionBoss2();
+				}
+				if (ActBoss3 == true) {
+
+				}
+		}
+
 		scoreText.setString(std::to_string(score));
+
 		bg.setPosition(pos.x - 768, pos.y - 384);
 		heartbar0.setPosition(pos.x - 698, pos.y - 354);
 		heartbar1.setPosition(pos.x - 698, pos.y - 354);
@@ -300,9 +395,18 @@ int main() {
 		monster5.Updatem5(deltaTime);
 		monster6.Updatem6(deltaTime);
 		monster7.Updatem7(deltaTime);
-		Boss.UpdateBoss1(deltaTime);
+		if (ActBoss1 == true) {
+			Boss1.UpdateBoss1(deltaTime);
+		}
+		if (ActBoss2 == true) {
+			Boss2.UpdateBoss1(deltaTime);
+		}
+		if (ActBoss3 == true) {
+			Boss1.UpdateBoss2(deltaTime);
+		}
 		sf::Vector2f direction;
 
+		//**************************************************************àªç¤ª¹ºÅêÍ¤**********************************************
 		int v = 0;
 		if (player.GetPosition().x > 11200) {
 			bosshit = bossht.getElapsedTime().asMilliseconds();
@@ -362,19 +466,32 @@ int main() {
 		//*************************************************************************************************************************
 
 		HitTimecount();
-		//printf("%f\n", hitchk);
-		printf("%d", PlayerHP);
-
-		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && chest.GetCollider().CheckCollistionChest(player.GetCollider())) {
-			chest.randitem();
-			chest_dis1 = true;
+		HealTimecount();
+		if (chest_dis1 == false) {
+			if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && chest.GetCollider().CheckCollistionChest(player.GetCollider())) {
+				chest.randitem();
+				chest_dis1 = true;
+			}
 		}
-		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && chest2.GetCollider().CheckCollistionChest(player.GetCollider())) {
-			chest2.randitem();
-			chest_dis2 = true;
+		if (chest_dis2 == false) {
+			if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && chest2.GetCollider().CheckCollistionChest(player.GetCollider())) {
+				chest2.randitem();
+				chest_dis2 = true;
+			}
+		}
+		if (chest_dis3 == false) {
+			if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && chest3.GetCollider().CheckCollistionChest(player.GetCollider())) {
+				chest3.randitem();
+				chest_dis3 = true;
+			}
 		}
 
-		UsePotion();
+		if (PlayerHP > 3) {
+			PlayerHP = 3;
+		}
+		else if (PlayerHP < 0) {
+			PlayerHP = 0;
+		}
 
 		view.setCenter(player.GetPosition());
 		window.clear();
@@ -387,16 +504,27 @@ int main() {
 				window.draw(bullet[i].bullet);
 			}
 		}
-			for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 1; i++) {
 				if (chksup_1[i] == 1) {
 					window.draw(superbullet[i].superbullet);
 				}
+		}
+		if (ActBoss1 == true) {
+			for (int i = 0; i < 3; i++) {
+				if (chkboss_1[i] == 1) {
+					window.draw(bulletboss1[i].bulletboss1);
+				}
 			}
+		}
+
 		if (chest_dis1 == false) {
 			chest.Draw(window);
 		}
 		if (chest_dis2 == false) {
 			chest2.Draw(window);
+		}
+		if (chest_dis3 == false) {
+			chest3.Draw(window);
 		}
 
 		player.Draw(window);
@@ -407,8 +535,17 @@ int main() {
 		monster5.Draw(window);
 		monster6.Draw(window);
 		monster7.Draw(window);
-		Boss.Draw(window);
-		Boss.DrawBR1(window);
+		window.draw(frame);
+
+		if (ActBoss1 == true) {
+			Boss1.Draw(window);
+		}
+		if (ActBoss2 == true) {
+			Boss2.Draw(window);
+		}
+		if (ActBoss3 == true) {
+			Boss1.Draw(window);
+		}
 
 		for (int i = 0; i < platforms.size() - v; i++)
 		{
@@ -432,7 +569,9 @@ int main() {
 	}
 	return 0;
 }
+//============================================================================================================================================
 
+//***********************************************************************¡ÃÐÊØ¹¸ÃÃÁ´Ò*********************************************
 void shoot(float x, float y) {
 	end = clock();
 	float dif = (float)(end - start) / CLOCKS_PER_SEC;
@@ -471,7 +610,9 @@ void shot(float x, float y) {
 		}
 	}
 }
+//***************************************************************************************************************************
 
+//****************************************************************ÂÔ§¡ÃÐÊØ¹¾ÔàÈÉ*********************************************
 void shootsuper(float x, float y) {
 	end = clock();
 	float dif = (float)(end - start) / CLOCKS_PER_SEC;
@@ -514,15 +655,86 @@ void shotsuper(float x, float y) {
 		}
 	}
 }
+//**************************************************************************************************************************
 
-void UsePotion() {
-	if (Potion == true) {
-		PlayerHP += 1;
-		Potion = false;
+//********************************************************BossBullet*****************************************************************
+void ActionBoss1(float x,float y) {
+	shootBullBossR1(x, y);
+	shotBullBossR1(x,y);
+}
+
+void shootBullBossR1(float x, float y) {
+	endboss = clock();
+	float dif = (float)(endboss - startboss) / CLOCKS_PER_SEC;
+	if (clockbpn > 0.5f && dif > 0.3) {
+		for (int i = 0; i < 3; i++) {
+			if (chkboss_1[i] != 1) {
+				bulletboss1[i].set(x - 20.0f, y + 400.0f);
+				chkboss_1[i] = 1;
+				startboss = clock();
+				Bullpn.restart();
+				break;
+			}
+		}
+		Bullpn.restart();
 	}
 }
 
-//****************************************************Chest**********************************************
+void shotBullBossR1(float x, float y)
+{
+	for (int i = 0; i < 3; i++) {
+		if (chkboss_1[i] == 1) {
+			float speed = 2.0f;
+			bulletboss1[i].bulletboss1.move(-speed, 0);
+			if (bulletboss1[i].bulletboss1.getPosition().x < x - 820) {
+				if (bulletboss1[2].bulletboss1.getPosition().x < x - 820) {
+					EndBossAction = true;
+					ActBoss1 = false;
+					Bullpn.restart();
+				}
+				chkboss_1[i] = 0;
+			}
+		}
+	}
+}
+
+void randActBoss()
+{
+	srand(time(NULL));
+	EndBossAction = false;
+	randomActBoss = rand() % 2;
+	if (randomActBoss == 0) {
+		ActBoss1 = true;
+	}
+	if (randomActBoss == 1) {
+		ActBoss2 = true;
+	}
+	if (randomActBoss == 2) {
+		ActBoss3 = true;
+	}
+	if (randomActBoss == 3) {
+		ActBoss4 = true;
+	}
+}
+//****************************************************************************************************************************************
+
+//*************************************************************BossAct2*************************************************************
+void ActionBoss2() {
+
+	EndBossAction = false;
+	printf("%f\n", Framechk);
+	chkTM_Frame1 = 4000.0;
+	if (Framechk >= chkTM_Frame1) {
+		printf("xxxxxxxx");
+		FrameTM.restart();
+		EndBossAction = true;
+		ActBoss2 = false;
+	}
+
+}
+//**********************************************************************************************************************************
+
+//****************************************************Chest*************************************************************************
 Chest::Chest(sf::Texture* texture,sf::Vector2f position)
 {
 	chest.setTexture(texture);
@@ -544,6 +756,7 @@ void Chest::randitem()
 	}
 	if (random_item == 1) {
 		Potion = true;
+		UsePotion();
 	}
 }
 
@@ -551,9 +764,9 @@ void Chest::Draw(sf::RenderWindow& window)
 {
 	window.draw(chest);
 }
+//**********************************************************************************************************************************
 
-//*********************************************************************************************************
-
+//********************************************************àªç¤ª¹ÁÍ¹-¤¹***************************************************************
 bool Collider::CheckCollistionmonplay(Collider other, sf::Vector2f& direction)
 {
 
@@ -573,9 +786,9 @@ bool Collider::CheckCollistionmonplay(Collider other, sf::Vector2f& direction)
 		if (hp_canDown == true) {
 			if (TM == 1.0f) {
 				if (hitchk > 3.5f) {
-					printf("%d", TM);
+					//printf("%d", TM);
 					PlayerHP--;
-					printf("xxxxxxxx\n");
+					//printf("xxxxxxxx\n");
 				}
 			}
 			else if (TM > 1.0f) {
@@ -586,7 +799,9 @@ bool Collider::CheckCollistionmonplay(Collider other, sf::Vector2f& direction)
 	}
 	return false;
 }
+//******************************************************************************************************************************
 
+//**************************************************************äÍà·Á************************************************************
 void HitTimecount() {
 	if (hp_canDown == false) {
 		hitchk = crash.getElapsedTime().asSeconds();
@@ -598,7 +813,33 @@ void HitTimecount() {
 	}
 }
 
-//***********************************************************************************************************************************
+void HealTimecount() {
+	if (Potion == false) {
+		Potionchk = Heal.getElapsedTime().asSeconds();
+		if (Potionchk > 3.5f) {
+			Heal.restart();
+			Potion = true;
+			PTM = 0;
+		}
+	}
+}
+
+void UsePotion() {
+	PTM += 1;
+	if (Potion == true) {
+		if (PTM == 1.0f) {
+			if (Potionchk > 2.5f) {
+				PlayerHP++;
+			}
+		}
+		else if (PTM > 1.0f) {
+			Potion = false;
+		}
+	}
+}
+//*********************************************************************************************************************************
+
+//******************************************************************àªç¤ª¹ÁÍ¹*********************************************************
 bool Collider::CheckCollistionbullmon(Collider other, sf::Vector2f& direction)
 {
 	sf::Vector2f otherPosition = other.GetPosition();
@@ -785,4 +1026,36 @@ bool Collider::CheckCollistionChest(Collider other)
 	}
 	return false;
 }
+//********************************************************************************************************************************************
+
+//*****************************************************************Boss2.cpp******************************************************************
+Boss2::Boss2(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed) :
+	animation(texture, imageCount, switchTime)
+{
+	this->speedboss = speed;
+	rowboss = 0;
+	faceRightboss = true;
+
+	bodyBoss.setSize(sf::Vector2f(670.0f, 670.0f));
+	bodyBoss.setTexture(texture);
+
+}
+
+Boss2::~Boss2() {}
+
+void Boss2::UpdateBoss1(float deltatimem1) {
+	bodyBoss.setPosition(sf::Vector2f(12000.0f, -1200.0f));
+	float x = bodyBoss.getPosition().x;
+	float y = bodyBoss.getPosition().y;
+	sf::Vector2f movement(0.0f, 0.0f);
+	faceRightboss = true;
+	animation.Update(rowboss, deltatimem1, faceRightboss);
+	bodyBoss.setTextureRect(animation.uvRect);
+}
+
+void Boss2::Draw(sf::RenderWindow& window)
+{
+	window.draw(bodyBoss);
+}
+
 //********************************************************************************************************************************************
