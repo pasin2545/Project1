@@ -17,6 +17,7 @@ public:
 	bool CheckCollistionbullmon5(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionbullmon6(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionbullmon7(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionmonplay(Collider other, sf::Vector2f& direction);
 
 	bool CheckCollistionChest(Collider other);
 
@@ -27,16 +28,8 @@ public:
 	bool CheckCollistion(Collider other, sf::Vector2f& direction, float push);
 	sf::Vector2f GetPosition() { return body.getPosition(); }
 	sf::Vector2f GetHalfSize() { return body.getSize() / 2.0f; }
-
-	bool monster1_die = false;
-	bool monster2_die = false;
-	bool monster3_die = false;
-	bool monster4_die = false;
-	bool monster5_die = false;
-	bool monster6_die = false;
-	bool monster7_die = false;
+	sf::Vector2f GetThreeSize() { return body.getSize() / 5.5f; }
 
 private:
 	sf::RectangleShape& body;
-	monster1* Monster1;
 };

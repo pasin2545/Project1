@@ -1,5 +1,8 @@
 #include<SFML/Graphics.hpp>
 #include<iostream>
+#include<stdlib.h>
+#include<time.h>
+#include<Windows.h>
 #include"Animation.h"
 #include"player.h"
 #include<vector>
@@ -13,7 +16,6 @@
 #include"Platform.h"
 #include"Collider.h"
 #include"Boss.h"
-#include"Chest.h"
 
 
 int chk_1[6] = { 0 };
@@ -22,6 +24,30 @@ int pst1[6];
 
 int chksup_1[1] = { 0 };
 int pst1sup[1];
+
+bool chest_open = false;
+bool chest2_open = false;
+bool superPower = false;
+bool use_superpower = false;
+bool chest_dis1 = false;
+bool chest_dis2 = false;
+bool hp_canDown = true;
+bool BurnTime = true;
+bool Potion = false;
+
+
+int PlayerHP = 3;
+int hpmon1 = 2;
+int hpmon2 = 3;
+int hpmon3 = 3;
+int hpmon4 = 2;
+int hpmon5 = 3;
+int hpmon6 = 3;
+int hpmon7 = 3;
+int hpBoss = 25;
+int score = 0;
+int TM=0;
+
 
 clock_t start=-0.2,end = 0;
 
@@ -34,16 +60,18 @@ void ResizeView(const sf::RenderWindow& window, sf::View& view)
 	view.setSize(VIEW_LENGTH * aspectRatio, VIEW_HEIGHT);
 }
 
-sf::Texture ChestTexture;
-Chest chest(&ChestTexture);
 
 void shoot(float, float);
 void shot(float,float);
 void shootsuper(float, float);
 void shotsuper(float, float);
+void HitTimecount();
+void UsePotion();
+
 
 sf::Texture* BULLET;
 sf::Texture* superBULLET;
+
 	class Bulleted {
 	public:
 		sf:: RectangleShape bullet;
@@ -76,10 +104,28 @@ sf::Texture* superBULLET;
 
 	};
 
+	class Chest
+	{
+	public:
+		Chest(sf::Texture* texture,sf::Vector2f position);
+		~Chest();
+		void randitem();
+		void Draw(sf::RenderWindow& window);
 
+		sf::Vector2f GetPosition() { return chest.getPosition(); }
+		Collider GetCollider() { return Collider(chest); }
+
+		sf::RectangleShape chest;
+
+	private:
+		int random_item;
+	};
 
 	superBulleted superbullet[1];
 	Bulleted bullet[6];
+
+	float hitchk;
+	sf::Clock crash;
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(1536, 768), "2D Game", sf::Style::Close | sf::Style::Close);
@@ -91,8 +137,8 @@ int main() {
 
 	std::vector<Platform> platforms;
 
-
 	//***********************Box*************************************************************
+	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 1000.0f), sf::Vector2f(-900.0f, 0.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(600.0f, 0.0f)));
 	platforms.push_back(Platform(nullptr, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(1450.0f, 0.0f)));
@@ -159,6 +205,36 @@ int main() {
 	sf::Texture BossTexture;
 	BossTexture.loadFromFile("Boss.png");
 	Boss Boss(&BossTexture, sf::Vector2u(6, 1), 0.3f, 200.0f);
+	sf::Texture ChestTexture;
+	ChestTexture.loadFromFile("Chestfix.png");
+	Chest chest(&ChestTexture, sf::Vector2f(1100.0f, -20.0f));
+	Chest chest2(&ChestTexture, sf::Vector2f(800.0f, -20.0f));
+
+	sf::Font font;
+	font.loadFromFile("Silver.ttf");
+	sf::Text scoreText;
+	scoreText.setFont(font);
+	scoreText.setFillColor(sf::Color::White);
+	scoreText.setCharacterSize(64);
+
+	//***********************Heart************************************
+	sf::RectangleShape heartbar0(sf::Vector2f(380.0f, 95.0f));
+	sf::RectangleShape heartbar1(sf::Vector2f(380.0f, 95.0f));
+	sf::RectangleShape heartbar2(sf::Vector2f(380.0f, 95.0f));
+	sf::RectangleShape heartbar3(sf::Vector2f(380.0f, 95.0f));
+	sf::Texture heartbar0Texture;
+	sf::Texture heartbar1Texture;
+	sf::Texture heartbar2Texture;
+	sf::Texture heartbar3Texture;
+	heartbar0Texture.loadFromFile("heartbar0.png");
+	heartbar1Texture.loadFromFile("heartbar1.png");
+	heartbar2Texture.loadFromFile("heartbar2.png");
+	heartbar3Texture.loadFromFile("heartbar3fix.png");
+	heartbar0.setTexture(&heartbar0Texture);
+	heartbar1.setTexture(&heartbar1Texture);
+	heartbar2.setTexture(&heartbar2Texture);
+	heartbar3.setTexture(&heartbar3Texture);
+	//****************************************************************
 
 	//***********************Background*******************************
 	sf::RectangleShape bg(sf::Vector2f(1536.0f, 768.0f));
@@ -185,9 +261,18 @@ int main() {
 
 		shoot(pos.x, pos.y);
 		shot(pos.x, pos.y);
-		shootsuper(pos.x, pos.y);
-		shotsuper(pos.x, pos.y);
+		//printf("%d", superPower);
+		if (superPower == true) {
+			shootsuper(pos.x, pos.y);
+			shotsuper(pos.x, pos.y);
+		}
+		scoreText.setString(std::to_string(score));
 		bg.setPosition(pos.x - 768, pos.y - 384);
+		heartbar0.setPosition(pos.x - 698, pos.y - 354);
+		heartbar1.setPosition(pos.x - 698, pos.y - 354);
+		heartbar2.setPosition(pos.x - 698, pos.y - 354);
+		heartbar3.setPosition(pos.x - 698, pos.y - 354);
+		scoreText.setPosition(pos.x + 600, pos.y - 354);
 		deltaTime = clock.restart().asSeconds();
 		if (deltaTime > 1.0f / 20.0f)
 			deltaTime = 1.0f / 20.0f;
@@ -248,32 +333,72 @@ int main() {
 				monster6.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 				monster7.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 			}
+
+			for (int j = 0; j < 1; j++) {
+				platforms[i].GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
+				superbullet[j].GetCollider().CheckCollistionbullmon(monster1.GetCollider(), direction);
+				superbullet[j].GetCollider().CheckCollistionbullmon2(monster2.GetCollider(), direction);
+				superbullet[j].GetCollider().CheckCollistionbullmon3(monster3.GetCollider(), direction);
+				superbullet[j].GetCollider().CheckCollistionbullmon4(monster4.GetCollider(), direction);
+				superbullet[j].GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
+				superbullet[j].GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
+				superbullet[j].GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
+				monster1.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
+				monster2.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
+				monster3.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
+				monster4.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
+				monster5.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
+				monster6.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
+				monster7.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
+			}
+			monster1.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
+			monster2.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
+			monster3.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
+			monster4.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
+			monster5.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
+			monster6.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
+			monster7.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
 		}
 		//*************************************************************************************************************************
-		/*if (.monster1_die == true) {
-			chest.Update();
-		}*/
+
+		HitTimecount();
+		//printf("%f\n", hitchk);
+		printf("%d", PlayerHP);
+
 		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && chest.GetCollider().CheckCollistionChest(player.GetCollider())) {
-				chest.randitem();
+			chest.randitem();
+			chest_dis1 = true;
 		}
+		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && chest2.GetCollider().CheckCollistionChest(player.GetCollider())) {
+			chest2.randitem();
+			chest_dis2 = true;
+		}
+
+		UsePotion();
+
 		view.setCenter(player.GetPosition());
 		window.clear();
 
 		window.draw(bg);
+
 		window.setView(view);
 		for (int i = 0; i < 6; i++) {
 			if (chk_1[i] == 1) {
 				window.draw(bullet[i].bullet);
 			}
 		}
-		if (chest.use_superpower == true) {
 			for (int i = 0; i < 1; i++) {
 				if (chksup_1[i] == 1) {
 					window.draw(superbullet[i].superbullet);
 				}
 			}
+		if (chest_dis1 == false) {
+			chest.Draw(window);
 		}
-		
+		if (chest_dis2 == false) {
+			chest2.Draw(window);
+		}
+
 		player.Draw(window);
 		monster1.Draw(window);
 		monster2.Draw(window);
@@ -284,11 +409,25 @@ int main() {
 		monster7.Draw(window);
 		Boss.Draw(window);
 		Boss.DrawBR1(window);
+
 		for (int i = 0; i < platforms.size() - v; i++)
 		{
 			platforms[i].Draw(window);
 		}
 
+		if (PlayerHP == 0) {
+			window.draw(heartbar0);
+		}
+		if (PlayerHP == 1) {
+			window.draw(heartbar1);
+		}
+		if (PlayerHP == 2) {
+			window.draw(heartbar2);
+		}
+		if (PlayerHP == 3) {
+			window.draw(heartbar3);
+		}
+		window.draw(scoreText);
 		window.display();
 	}
 	return 0;
@@ -336,8 +475,8 @@ void shot(float x, float y) {
 void shootsuper(float x, float y) {
 	end = clock();
 	float dif = (float)(end - start) / CLOCKS_PER_SEC;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && dif > 0.5 && chest.superPower == true) {
-		chest.use_superpower == true;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && dif > 0.5) {
+		use_superpower = true;
 		for (int i = 0; i < 1; i++) {
 			if (chksup_1[i] == 0) {
 				if (pst == 1) {
@@ -348,7 +487,6 @@ void shootsuper(float x, float y) {
 				}
 				pst1sup[i] = pst;
 				chksup_1[i] = 1;
-				chest.superPower == false;
 				start = clock();
 				break;
 			}
@@ -357,7 +495,7 @@ void shootsuper(float x, float y) {
 }
 
 void shotsuper(float x, float y) {
-	if (chest.use_superpower == true) {
+	if (use_superpower == true) {
 		for (int i = 0; i < 1; i++) {
 			if (chksup_1[i] == 1) {
 				float speed = 1.0f;
@@ -369,11 +507,282 @@ void shotsuper(float x, float y) {
 				}
 				if (superbullet[i].superbullet.getPosition().x < x - 1920 || superbullet[i].superbullet.getPosition().x > x + 1920) {
 					chksup_1[i] = 0;
-					chest.use_superpower == false;
+					superPower = false;
+					use_superpower = false;
 				}
 			}
 		}
 	}
 }
 
+void UsePotion() {
+	if (Potion == true) {
+		PlayerHP += 1;
+		Potion = false;
+	}
+}
 
+//****************************************************Chest**********************************************
+Chest::Chest(sf::Texture* texture,sf::Vector2f position)
+{
+	chest.setTexture(texture);
+	chest.setSize(sf::Vector2f(72.0f, 45.0f));
+	chest.setPosition(sf::Vector2f(position));
+}
+
+Chest::~Chest()
+{
+}
+
+void Chest::randitem()
+{
+	srand(time(NULL));
+	chest_open = true;
+	random_item = rand() % 2;
+	if (random_item == 0) {
+		superPower = true;
+	}
+	if (random_item == 1) {
+		Potion = true;
+	}
+}
+
+void Chest::Draw(sf::RenderWindow& window)
+{
+	window.draw(chest);
+}
+
+//*********************************************************************************************************
+
+bool Collider::CheckCollistionmonplay(Collider other, sf::Vector2f& direction)
+{
+
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetThreeSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetThreeSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		TM+=1;
+		if (hp_canDown == true) {
+			if (TM == 1.0f) {
+				if (hitchk > 3.5f) {
+					printf("%d", TM);
+					PlayerHP--;
+					printf("xxxxxxxx\n");
+				}
+			}
+			else if (TM > 1.0f) {
+				hp_canDown = false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+void HitTimecount() {
+	if (hp_canDown == false) {
+		hitchk = crash.getElapsedTime().asSeconds();
+		if (hitchk > 3.5f) {
+			crash.restart();
+			hp_canDown = true;
+			TM = 0;
+		}
+	}
+}
+
+//***********************************************************************************************************************************
+bool Collider::CheckCollistionbullmon(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		hpmon1 -= 1;
+		if (hpmon1 == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 100;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Collider::CheckCollistionbullmon2(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		printf("%d\n", hpmon2);
+		hpmon2 -= 1;
+		if (hpmon2 == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 100;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbullmon3(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		printf("%d\n", hpmon2);
+		hpmon3 -= 1;
+		if (hpmon3 == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 100;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbullmon4(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		printf("%d\n", hpmon4);
+		hpmon4 -= 1;
+		if (hpmon4 == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 100;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbullmon5(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		printf("%d\n", hpmon5);
+		hpmon5 -= 1;
+		if (hpmon5 == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 100;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbullmon6(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		printf("%d\n", hpmon6);
+		hpmon6 -= 1;
+		if (hpmon6 == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 100;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbullmon7(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		printf("%d\n", hpmon7);
+		hpmon7 -= 1;
+		if (hpmon7 == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 100;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionChest(Collider other)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 0.0f) {
+		return true;
+	}
+	return false;
+}
+//********************************************************************************************************************************************

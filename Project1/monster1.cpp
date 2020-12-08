@@ -1,6 +1,4 @@
 #include "monster1.h"
-#include"Chest.h"
-
 int monster1hp = 2;
 bool i = false;
 monster1::monster1(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed) :
