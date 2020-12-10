@@ -29,7 +29,7 @@ int chkboss_1[3] = { 0 };
 int chkboss_3[3] = { 0 };
 
 bool chest_open = false;
-bool superPower = true;
+bool superPower = false;
 bool use_superpower = false;
 bool chest_dis1 = false;
 bool chest_dis2 = false;
@@ -52,7 +52,7 @@ int hpmon4 = 2;
 int hpmon5 = 3;
 int hpmon6 = 3;
 int hpmon7 = 3;
-int hpBoss = 25;
+int hpBoss = 30;
 int score = 0;
 int TM=0;
 int PTM = 0;
@@ -96,7 +96,6 @@ void ActionBoss4();
 
 
 //***********************************************class PlayerBullet**********************************
-//sf::Texture* BULLET;
 sf::Texture* superBULLET;
 
 	class Bulleted {
@@ -134,15 +133,16 @@ sf::Texture* superBULLET;
 //********************************************************************************************
 	
 //****************************************class Bossbullet******************************************
-	sf::Texture* BULLETBOSS;
+	//sf::Texture* BULLETBOSS;
 	class BulletBoss {
 	public:
 		sf::RectangleShape bulletboss1;
-
+		sf::Texture BULLETBOSS;
 		void set(float x, float y)
 		{
-			bulletboss1.setTexture(BULLETBOSS);
-			bulletboss1.setSize(sf::Vector2f(50.0f, 50.0f));
+			BULLETBOSS.loadFromFile("fireBoss.png");
+			bulletboss1.setTexture(&BULLETBOSS);
+			bulletboss1.setSize(sf::Vector2f(95.0f, 50.0f));
 			bulletboss1.setPosition(x, y);
 		}
 
@@ -155,11 +155,12 @@ sf::Texture* superBULLET;
 	class BulletBoss2 {
 	public:
 		sf::RectangleShape bulletboss2;
-
+		sf::Texture BULLETBOSS;
 		void set(float x, float y)
 		{
-			bulletboss2.setTexture(BULLETBOSS);
-			bulletboss2.setSize(sf::Vector2f(50.0f, 50.0f));
+			BULLETBOSS.loadFromFile("fireBoss2.png");
+			bulletboss2.setTexture(&BULLETBOSS);
+			bulletboss2.setSize(sf::Vector2f(95.0f, 50.0f));
 			bulletboss2.setPosition(x, y);
 		}
 
@@ -362,6 +363,133 @@ int main() {
 	heartbar2.setTexture(&heartbar2Texture);
 	heartbar3.setTexture(&heartbar3Texture);
 	//****************************************************************
+	
+	//***********************BossHeartBar*****************************
+	sf::RectangleShape Bossheartbar0(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar1(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar2(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar3(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar4(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar5(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar6(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar7(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar8(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar9(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar10(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar11(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar12(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar13(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar14(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar15(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar16(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar17(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar18(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar19(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar20(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar21(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar22(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar23(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar24(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar25(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar26(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar27(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar28(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar29(sf::Vector2f(720.0f, 63.0f));
+	sf::RectangleShape Bossheartbar30(sf::Vector2f(720.0f, 63.0f));
+	sf::Texture Bossheartbar0Texture;
+	sf::Texture Bossheartbar1Texture;
+	sf::Texture Bossheartbar2Texture;
+	sf::Texture Bossheartbar3Texture;
+	sf::Texture Bossheartbar4Texture;
+	sf::Texture Bossheartbar5Texture;
+	sf::Texture Bossheartbar6Texture;
+	sf::Texture Bossheartbar7Texture;
+	sf::Texture Bossheartbar8Texture;
+	sf::Texture Bossheartbar9Texture;
+	sf::Texture Bossheartbar10Texture;
+	sf::Texture Bossheartbar11Texture;
+	sf::Texture Bossheartbar12Texture;
+	sf::Texture Bossheartbar13Texture;
+	sf::Texture Bossheartbar14Texture;
+	sf::Texture Bossheartbar15Texture;
+	sf::Texture Bossheartbar16Texture;
+	sf::Texture Bossheartbar17Texture;
+	sf::Texture Bossheartbar18Texture;
+	sf::Texture Bossheartbar19Texture;
+	sf::Texture Bossheartbar20Texture;
+	sf::Texture Bossheartbar21Texture;
+	sf::Texture Bossheartbar22Texture;
+	sf::Texture Bossheartbar23Texture;
+	sf::Texture Bossheartbar24Texture;
+	sf::Texture Bossheartbar25Texture;
+	sf::Texture Bossheartbar26Texture;
+	sf::Texture Bossheartbar27Texture;
+	sf::Texture Bossheartbar28Texture;
+	sf::Texture Bossheartbar29Texture;
+	sf::Texture Bossheartbar30Texture;
+	Bossheartbar0Texture.loadFromFile("BossheartBar0.png");
+	Bossheartbar1Texture.loadFromFile("BossheartBar1.png");
+	Bossheartbar2Texture.loadFromFile("BossheartBar2.png");
+	Bossheartbar3Texture.loadFromFile("BossheartBar3.png");
+	Bossheartbar4Texture.loadFromFile("BossheartBar4.png");
+	Bossheartbar5Texture.loadFromFile("BossheartBar5.png");
+	Bossheartbar6Texture.loadFromFile("BossheartBar6.png");
+	Bossheartbar7Texture.loadFromFile("BossheartBar7.png");
+	Bossheartbar8Texture.loadFromFile("BossheartBar8.png");
+	Bossheartbar9Texture.loadFromFile("BossheartBar9.png");
+	Bossheartbar10Texture.loadFromFile("BossheartBar10.png");
+	Bossheartbar11Texture.loadFromFile("BossheartBar11.png");
+	Bossheartbar12Texture.loadFromFile("BossheartBar12.png");
+	Bossheartbar13Texture.loadFromFile("BossheartBar13.png");
+	Bossheartbar14Texture.loadFromFile("BossheartBar14.png");
+	Bossheartbar15Texture.loadFromFile("BossheartBar15.png");
+	Bossheartbar16Texture.loadFromFile("BossheartBar16.png");
+	Bossheartbar17Texture.loadFromFile("BossheartBar17.png");
+	Bossheartbar18Texture.loadFromFile("BossheartBar18.png");
+	Bossheartbar19Texture.loadFromFile("BossheartBar19.png");
+	Bossheartbar20Texture.loadFromFile("BossheartBar20.png");
+	Bossheartbar21Texture.loadFromFile("BossheartBar21.png");
+	Bossheartbar22Texture.loadFromFile("BossheartBar22.png");
+	Bossheartbar23Texture.loadFromFile("BossheartBar23.png");
+	Bossheartbar24Texture.loadFromFile("BossheartBar24.png");
+	Bossheartbar25Texture.loadFromFile("BossheartBar25.png");
+	Bossheartbar26Texture.loadFromFile("BossheartBar26.png");
+	Bossheartbar27Texture.loadFromFile("BossheartBar27.png");
+	Bossheartbar28Texture.loadFromFile("BossheartBar28.png");
+	Bossheartbar29Texture.loadFromFile("BossheartBar29.png");
+	Bossheartbar30Texture.loadFromFile("BossheartBar30.png");
+	Bossheartbar0.setTexture(&Bossheartbar0Texture);
+	Bossheartbar1.setTexture(&Bossheartbar1Texture);
+	Bossheartbar2.setTexture(&Bossheartbar2Texture);
+	Bossheartbar3.setTexture(&Bossheartbar3Texture);
+	Bossheartbar4.setTexture(&Bossheartbar4Texture);
+	Bossheartbar5.setTexture(&Bossheartbar5Texture);
+	Bossheartbar6.setTexture(&Bossheartbar6Texture);
+	Bossheartbar7.setTexture(&Bossheartbar7Texture);
+	Bossheartbar8.setTexture(&Bossheartbar8Texture);
+	Bossheartbar9.setTexture(&Bossheartbar9Texture);
+	Bossheartbar10.setTexture(&Bossheartbar10Texture);
+	Bossheartbar11.setTexture(&Bossheartbar11Texture);
+	Bossheartbar12.setTexture(&Bossheartbar12Texture);
+	Bossheartbar13.setTexture(&Bossheartbar13Texture);
+	Bossheartbar14.setTexture(&Bossheartbar14Texture);
+	Bossheartbar15.setTexture(&Bossheartbar15Texture);
+	Bossheartbar16.setTexture(&Bossheartbar16Texture);
+	Bossheartbar17.setTexture(&Bossheartbar17Texture);
+	Bossheartbar18.setTexture(&Bossheartbar18Texture);
+	Bossheartbar19.setTexture(&Bossheartbar19Texture);
+	Bossheartbar20.setTexture(&Bossheartbar20Texture);
+	Bossheartbar21.setTexture(&Bossheartbar21Texture);
+	Bossheartbar22.setTexture(&Bossheartbar22Texture);
+	Bossheartbar23.setTexture(&Bossheartbar23Texture);
+	Bossheartbar24.setTexture(&Bossheartbar24Texture);
+	Bossheartbar25.setTexture(&Bossheartbar25Texture);
+	Bossheartbar26.setTexture(&Bossheartbar26Texture);
+	Bossheartbar27.setTexture(&Bossheartbar27Texture);
+	Bossheartbar28.setTexture(&Bossheartbar28Texture);
+	Bossheartbar29.setTexture(&Bossheartbar29Texture);
+	Bossheartbar30.setTexture(&Bossheartbar30Texture);
+	//****************************************************************
 
 	//***********************Background*******************************
 	sf::RectangleShape bg(sf::Vector2f(1536.0f, 768.0f));
@@ -429,6 +557,37 @@ int main() {
 		heartbar1.setPosition(pos.x - 698, pos.y - 354);
 		heartbar2.setPosition(pos.x - 698, pos.y - 354);
 		heartbar3.setPosition(pos.x - 698, pos.y - 354);
+		Bossheartbar30.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar29.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar28.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar27.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar26.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar25.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar24.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar23.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar22.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar21.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar20.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar19.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar18.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar17.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar16.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar15.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar14.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar13.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar12.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar11.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar10.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar9.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar8.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar7.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar6.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar5.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar4.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar3.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar2.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar1.setPosition(pos.x - 320, pos.y + 300);
+		Bossheartbar0.setPosition(pos.x - 320, pos.y + 300);
 		scoreText.setPosition(pos.x + 600, pos.y - 354);
 		deltaTime = clock.restart().asSeconds();
 		if (deltaTime > 1.0f / 20.0f)
@@ -722,6 +881,99 @@ int main() {
 		if (PlayerHP == 3) {
 			window.draw(heartbar3);
 		}
+		if (hpBoss == 0) {
+			window.draw(Bossheartbar0);
+		}
+		if (hpBoss == 1) {
+			window.draw(Bossheartbar1);
+		}
+		if (hpBoss == 2) {
+			window.draw(Bossheartbar2);
+		}
+		if (hpBoss == 3) {
+			window.draw(Bossheartbar3);
+		}
+		if (hpBoss == 4) {
+			window.draw(Bossheartbar4);
+		}
+		if (hpBoss == 5) {
+			window.draw(Bossheartbar5);
+		}
+		if (hpBoss == 6) {
+			window.draw(Bossheartbar6);
+		}
+		if (hpBoss == 7) {
+			window.draw(Bossheartbar7);
+		}
+		if (hpBoss == 8) {
+			window.draw(Bossheartbar8);
+		}
+		if (hpBoss == 9) {
+			window.draw(Bossheartbar9);
+		}
+		if (hpBoss == 10) {
+			window.draw(Bossheartbar10);
+		}
+		if (hpBoss == 11) {
+			window.draw(Bossheartbar11);
+		}
+		if (hpBoss == 12) {
+			window.draw(Bossheartbar12);
+		}
+		if (hpBoss == 13) {
+			window.draw(Bossheartbar13);
+		}
+		if (hpBoss == 14) {
+			window.draw(Bossheartbar14);
+		}
+		if (hpBoss == 15) {
+			window.draw(Bossheartbar15);
+		}
+		if (hpBoss == 16) {
+			window.draw(Bossheartbar16);
+		}
+		if (hpBoss == 17) {
+			window.draw(Bossheartbar17);
+		}
+		if (hpBoss == 18) {
+			window.draw(Bossheartbar18);
+		}
+		if (hpBoss == 19) {
+			window.draw(Bossheartbar19);
+		}
+		if (hpBoss == 20) {
+			window.draw(Bossheartbar20);
+		}
+		if (hpBoss == 21) {
+			window.draw(Bossheartbar21);
+		}
+		if (hpBoss == 22) {
+			window.draw(Bossheartbar22);
+		}
+		if (hpBoss == 23) {
+			window.draw(Bossheartbar23);
+		}
+		if (hpBoss == 24) {
+			window.draw(Bossheartbar24);
+		}
+		if (hpBoss == 25) {
+			window.draw(Bossheartbar25);
+		}
+		if (hpBoss == 26) {
+			window.draw(Bossheartbar26);
+		}
+		if (hpBoss == 27) {
+			window.draw(Bossheartbar27);
+		}
+		if (hpBoss == 28) {
+			window.draw(Bossheartbar28);
+		}
+		if (hpBoss == 29) {
+			window.draw(Bossheartbar29);
+		}
+		if (hpBoss == 30) {
+			window.draw(Bossheartbar30);
+		}
 		window.draw(scoreText);
 		window.display();
 	}
@@ -823,7 +1075,7 @@ void ActionBoss1(float x,float y) {
 void shootBullBossR1(float x, float y) {
 	endboss = clock();
 	float dif = (float)(endboss - startboss) / CLOCKS_PER_SEC;
-	if (clockbpn > 0.5f && dif > 0.3) {
+	if (clockbpn > 0.5f && dif > 0.5) {
 		for (int i = 0; i < 3; i++) {
 			if (chkboss_1[i] != 1) {
 				bulletboss1[i].set(x -20.0f, y + 400.0f);
@@ -841,7 +1093,7 @@ void shotBullBossR1(float x, float y)
 {
 	for (int i = 0; i < 3; i++) {
 		if (chkboss_1[i] == 1) {
-			float speed = 2.0f;
+			float speed = 1.0f;
 			bulletboss1[i].bulletboss1.move(-speed, 0);
 			if (bulletboss1[i].bulletboss1.getPosition().x < x - 820) {
 				if (bulletboss1[2].bulletboss1.getPosition().x < x - 820) {
@@ -897,7 +1149,7 @@ void ActionBoss3(float x, float y) {
 void shootBullBossR3(float x, float y) {
 	endboss2 = clock();
 	float dif = (float)(endboss2 - startboss2) / CLOCKS_PER_SEC;
-	if (clockbpn2 > 0.5f && dif > 0.3) {
+	if (clockbpn2 > 0.5f && dif > 0.5) {
 		for (int i = 0; i < 3; i++) {
 			if (chkboss_3[i] != 1) {
 				bulletboss3[i].set(x - 20.0f, y + 400.0f);
@@ -915,7 +1167,7 @@ void shotBullBossR3(float x, float y)
 {
 	for (int i = 0; i < 3; i++) {
 		if (chkboss_3[i] == 1) {
-			float speed = 2.0f;
+			float speed = 1.0f;
 			bulletboss3[i].bulletboss2.move(speed, 0);
 			if (bulletboss3[i].bulletboss2.getPosition().x > x + 820 ) {
 				if (bulletboss3[2].bulletboss2.getPosition().x > x + 820) {
