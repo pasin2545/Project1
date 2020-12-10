@@ -1,7 +1,7 @@
 #pragma once
 #pragma once
 #include<SFML/Graphics.hpp>
-#include"Animation.h"
+#include"Animation2.h"
 #include"Collider.h"
 
 class monster5

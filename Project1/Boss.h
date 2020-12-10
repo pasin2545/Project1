@@ -1,7 +1,7 @@
 #pragma once
 #include<SFML/Graphics.hpp>
 #include"Collider.h"
-#include"Animation.h"
+#include"Animation2.h"
 class Boss
 {
 public:
@@ -14,13 +14,13 @@ public:
 
 	sf::Vector2f GetPosition() { return bodyBoss.getPosition(); }
 	Collider GetCollider() { return Collider(bodyBoss); }
-
+	bool faceRightm1;
 private:
 	sf::RectangleShape bodyBoss;
 	Animation animation;
 	unsigned int rowm1;
 	float speedm1;
-	bool faceRightm1;
+
 };
 
 

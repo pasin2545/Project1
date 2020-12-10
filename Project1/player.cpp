@@ -1,5 +1,5 @@
 #include "player.h"
-#include "Animation.h"
+#include "Animation2.h"
 
 Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float speed, float jumpHeight):
 	animation(texture,imageCount,switchTime)
