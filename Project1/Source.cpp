@@ -29,7 +29,7 @@ int chkboss_1[3] = { 0 };
 int chkboss_3[3] = { 0 };
 
 bool chest_open = false;
-bool superPower = false;
+bool superPower = true;
 bool use_superpower = false;
 bool chest_dis1 = false;
 bool chest_dis2 = false;
@@ -207,7 +207,27 @@ sf::Texture* superBULLET;
 		float speedboss;
 		bool faceRightboss;
 	};
-//*******************************************************************************************************************
+//******************************************************************************************************************
+	class BossAct1
+	{
+		public:
+			BossAct1(sf::Vector2f position);
+			sf::RectangleShape Bossact1;
+			void Draw(sf::RenderWindow& window);
+
+			sf::Vector2f GetPosition() { return Bossact1.getPosition(); }
+			Collider GetColliderAct1() { return Collider(Bossact1); }
+	};
+	class BossAct2
+	{
+	public:
+		BossAct2(sf::Vector2f position);
+		sf::RectangleShape Bossact2;
+		void Draw(sf::RenderWindow& window);
+
+		sf::Vector2f GetPosition() { return Bossact2.getPosition(); }
+		Collider GetColliderAct2() { return Collider(Bossact2); }
+	};
 
 	superBulleted superbullet[1];
 	Bulleted bullet[6];
@@ -312,6 +332,10 @@ int main() {
 	Chest chest(&ChestTexture, sf::Vector2f(1100.0f, -20.0f));
 	Chest chest2(&ChestTexture, sf::Vector2f(4900.0f, -20.0f));
 	Chest chest3(&ChestTexture, sf::Vector2f(8770.0f, -405.0f));
+	BossAct1 BoxBossAct1(sf::Vector2f(12475.0f, -1025.0f));
+	BossAct2 BoxBossAct2(sf::Vector2f(12475.0f, -1040.0f));
+	BossAct1 BoxBossAct3(sf::Vector2f(11550.0f, -1025.0f));
+	BossAct2 BoxBossAct4(sf::Vector2f(11425.0f, -1040.0f));
 
 	sf::Font font;
 	font.loadFromFile("Silver.ttf");
@@ -353,7 +377,6 @@ int main() {
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
-		//printf("%f\n", pos.x);
 		printf("%d\n", hpBoss);
 
 		if (player.faceRight == false) {
@@ -474,8 +497,19 @@ int main() {
 				bullet[j].GetCollider().CheckCollistionbullmon5(monster5.GetCollider(), direction);
 				bullet[j].GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
 				bullet[j].GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
-				bullet[j].GetCollider().CheckCollistionbullBoss(Boss1.GetCollider(), direction);
-				bullet[j].GetCollider().CheckCollistionbullBoss(Boss2.GetCollider(), direction);
+				if (startBossStage < 1500 || ActBoss1 == true) {
+					bullet[j].GetCollider().CheckCollistionbullBoss1(BoxBossAct1.GetColliderAct1(), direction);
+				}
+				if (ActBoss2 == true)
+				{
+					bullet[j].GetCollider().CheckCollistionbullBoss2(BoxBossAct2.GetColliderAct2(), direction);
+				}
+				if (ActBoss3 == true) {
+					bullet[j].GetCollider().CheckCollistionbullBoss3(BoxBossAct3.GetColliderAct1(), direction);
+				}
+				if (ActBoss4 == true) {
+					bullet[j].GetCollider().CheckCollistionbullBoss4(BoxBossAct4.GetColliderAct2(), direction);
+				}
 				monster1.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);				
 				monster2.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 				monster3.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
@@ -483,8 +517,19 @@ int main() {
 				monster5.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 				monster6.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 				monster7.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
-				Boss1.GetCollider().CheckCollistionBossbull(bullet[j].GetCollider(), direction, 1.0f);
-				Boss2.GetCollider().CheckCollistionBossbull(bullet[j].GetCollider(), direction, 1.0f);
+				if (startBossStage < 1500 || ActBoss1 == true) {
+					BoxBossAct1.GetColliderAct1().CheckCollistionBossbull1(bullet[j].GetCollider(), direction, 1.0f);
+				}
+				if (ActBoss2 == true)
+				{
+					BoxBossAct2.GetColliderAct2().CheckCollistionBossbull2(bullet[j].GetCollider(), direction, 1.0f);
+				}
+				if (ActBoss3 == true) {
+					BoxBossAct3.GetColliderAct1().CheckCollistionBossbull3(bullet[j].GetCollider(), direction, 1.0f);
+				}
+				if (ActBoss4 == true) {
+					BoxBossAct4.GetColliderAct2().CheckCollistionBossbull4(bullet[j].GetCollider(), direction, 1.0f);
+				}
 			}
 
 			for (int j = 0; j < 1; j++) {
@@ -496,8 +541,19 @@ int main() {
 				superbullet[j].GetCollider().CheckCollistionsupbullmon5(monster5.GetCollider(), direction);
 				superbullet[j].GetCollider().CheckCollistionsupbullmon6(monster6.GetCollider(), direction);
 				superbullet[j].GetCollider().CheckCollistionsupbullmon7(monster7.GetCollider(), direction);
-				superbullet[j].GetCollider().CheckCollistionsupbullBoss(Boss1.GetCollider(), direction);
-				superbullet[j].GetCollider().CheckCollistionsupbullBoss(Boss2.GetCollider(), direction);
+				if (startBossStage < 1500 || ActBoss1 == true) {
+					superbullet[j].GetCollider().CheckCollistionsupbullBoss1(BoxBossAct1.GetColliderAct1(), direction);
+				}
+				if (ActBoss2 == true)
+				{
+					superbullet[j].GetCollider().CheckCollistionsupbullBoss2(BoxBossAct2.GetColliderAct2(), direction);
+				}
+				if (ActBoss3 == true) {
+					superbullet[j].GetCollider().CheckCollistionsupbullBoss3(BoxBossAct3.GetColliderAct1(), direction);
+				}
+				if (ActBoss4 == true) {
+					superbullet[j].GetCollider().CheckCollistionsupbullBoss4(BoxBossAct4.GetColliderAct2(), direction);
+				}
 				monster1.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
 				monster2.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
 				monster3.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
@@ -505,8 +561,28 @@ int main() {
 				monster5.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
 				monster6.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
 				monster7.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
-				Boss1.GetCollider().CheckCollistionBossbull(superbullet[j].GetCollider(), direction, 1.0f);
-				Boss2.GetCollider().CheckCollistionBossbull(superbullet[j].GetCollider(), direction, 1.0f);
+				if (startBossStage < 1500 || ActBoss1 == true) {
+					BoxBossAct1.GetColliderAct1().CheckCollistionBosssupbull1(superbullet[j].GetCollider(), direction, 1.0f);
+				}
+				if (ActBoss2 == true)
+				{
+					BoxBossAct2.GetColliderAct2().CheckCollistionBosssupbull2(superbullet[j].GetCollider(), direction, 1.0f);
+				}
+				if (ActBoss3 == true) {
+					BoxBossAct3.GetColliderAct1().CheckCollistionBosssupbull3(superbullet[j].GetCollider(), direction, 1.0f);
+				}
+				if (ActBoss4 == true) {
+					BoxBossAct4.GetColliderAct2().CheckCollistionBosssupbull4(superbullet[j].GetCollider(), direction, 1.0f);
+				}
+			}
+
+			for (int j = 0; j < 3; j++) {
+				bulletboss1[j].GetCollider().CheckCollistionBossplaybulletboss(player.GetCollider(), direction);
+				player.GetCollider().CheckCollistionbulletBossplayer(bulletboss1[j].GetCollider(), direction,1.0f);
+			}
+			for (int j = 0; j < 3; j++) {
+				bulletboss3[j].GetCollider().CheckCollistionBossplaybulletboss(player.GetCollider(), direction);
+				player.GetCollider().CheckCollistionbulletBossplayer(bulletboss3[j].GetCollider(), direction, 1.0f);
 			}
 			monster1.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
 			monster2.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
@@ -515,8 +591,19 @@ int main() {
 			monster5.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
 			monster6.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
 			monster7.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
-			Boss1.GetCollider().CheckCollistionBossplay(player.GetCollider(), direction);
-			Boss2.GetCollider().CheckCollistionBossplay(player.GetCollider(), direction);
+			if (startBossStage < 1500 || ActBoss1 == true) {
+				BoxBossAct1.GetColliderAct1().CheckCollistionBossplayAct1(player.GetCollider(), direction);
+			}
+			if (ActBoss2 == true)
+			{
+				BoxBossAct2.GetColliderAct2().CheckCollistionBossplayAct2(player.GetCollider(), direction);
+			}
+			if (ActBoss3 == true) {
+				BoxBossAct3.GetColliderAct1().CheckCollistionBossplayAct3(player.GetCollider(), direction);
+			}
+			if (ActBoss4 == true) {
+				BoxBossAct4.GetColliderAct2().CheckCollistionBossplayAct4(player.GetCollider(), direction);
+			}
 		}
 		//*************************************************************************************************************************
 
@@ -598,18 +685,23 @@ int main() {
 		monster6.Draw(window);
 		monster7.Draw(window);
 		if (startBossStage < 1500) {
+			BoxBossAct1.Draw(window);
 			Boss1.Draw(window);
 		}
 		if (ActBoss1 == true) {
+			BoxBossAct1.Draw(window);
 			Boss1.Draw(window);
 		}
 		if (ActBoss2 == true) {
+			BoxBossAct2.Draw(window);
 			Boss2.Draw(window);
 		}
 		if (ActBoss3 == true) {
+			BoxBossAct3.Draw(window);
 			Boss1.Draw(window);
 		}
 		if (ActBoss4 == true) {
+			BoxBossAct4.Draw(window);
 			Boss2.Draw(window);
 		}
 
@@ -734,7 +826,7 @@ void shootBullBossR1(float x, float y) {
 	if (clockbpn > 0.5f && dif > 0.3) {
 		for (int i = 0; i < 3; i++) {
 			if (chkboss_1[i] != 1) {
-				bulletboss1[i].set(x - 20.0f, y + 400.0f);
+				bulletboss1[i].set(x -20.0f, y + 400.0f);
 				chkboss_1[i] = 1;
 				startboss = clock();
 				Bullpn.restart();
@@ -825,7 +917,7 @@ void shotBullBossR3(float x, float y)
 		if (chkboss_3[i] == 1) {
 			float speed = 2.0f;
 			bulletboss3[i].bulletboss2.move(speed, 0);
-			if (bulletboss3[i].bulletboss2.getPosition().x > x + 820) {
+			if (bulletboss3[i].bulletboss2.getPosition().x > x + 820 ) {
 				if (bulletboss3[2].bulletboss2.getPosition().x > x + 820) {
 					EndBossAction = true;
 					ActBoss3 = false;
@@ -883,7 +975,7 @@ void Chest::Draw(sf::RenderWindow& window)
 }
 //**********************************************************************************************************************************
 
-//********************************************************àªç¤ª¹ÁÍ¹-¤¹***************************************************************
+//********************************************************àªç¤ª¹ÁÍ¹ - ¤¹***************************************************************
 bool Collider::CheckCollistionmonplay(Collider other, sf::Vector2f& direction)
 {
 
@@ -915,7 +1007,7 @@ bool Collider::CheckCollistionmonplay(Collider other, sf::Vector2f& direction)
 	return false;
 }
 
-bool Collider::CheckCollistionBossplay(Collider other, sf::Vector2f& direction)
+bool Collider::CheckCollistionBossplayAct1(Collider other, sf::Vector2f& direction)
 {
 
 	sf::Vector2f otherPosition = other.GetPosition();
@@ -928,6 +1020,138 @@ bool Collider::CheckCollistionBossplay(Collider other, sf::Vector2f& direction)
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if (intersectX < -243.0f && intersectY < 10.5f) {
+		TM += 1;
+		if (hp_canDown == true) {
+			if (TM == 1.0f) {
+				if (hitchk > 3.5f) {
+					PlayerHP--;
+				}
+			}
+			else if (TM > 1.0f) {
+				hp_canDown = false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Collider::CheckCollistionBossplayAct3(Collider other, sf::Vector2f& direction)
+{
+
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < 0.0f && intersectY < 10.5f) {
+		TM += 1;
+		if (hp_canDown == true) {
+			if (TM == 1.0f) {
+				if (hitchk > 3.5f) {
+					PlayerHP--;
+				}
+			}
+			else if (TM > 1.0f) {
+				hp_canDown = false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Collider::CheckCollistionBossplayAct2(Collider other, sf::Vector2f& direction)
+{
+
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if (intersectX < -370.5f && intersectY < 25.5f) {
+		TM += 1;
+		if (hp_canDown == true) {
+			if (TM == 1.0f) {
+				if (hitchk > 3.5f) {
+					PlayerHP--;
+				}
+			}
+			else if (TM > 1.0f) {
+				hp_canDown = false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Collider::CheckCollistionBossplayAct4(Collider other, sf::Vector2f& direction)
+{
+
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if (intersectX < 115.0f && intersectY < 25.5f) {
+		TM += 1;
+		if (hp_canDown == true) {
+			if (TM == 1.0f) {
+				if (hitchk > 3.5f) {
+					PlayerHP--;
+				}
+			}
+			else if (TM > 1.0f) {
+				hp_canDown = false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Collider::CheckCollistionBossplaybulletboss(Collider other, sf::Vector2f& direction)
+{
+
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
 
 	if (intersectX < 0.0f && intersectY < 0.0f) {
 		TM += 1;
@@ -945,6 +1169,27 @@ bool Collider::CheckCollistionBossplay(Collider other, sf::Vector2f& direction)
 	}
 	return false;
 }
+
+bool Collider::CheckCollistionbulletBossplayer(Collider other, sf::Vector2f& direction, float push)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetFullSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX < -200.0f && intersectY < 10.0f) {
+		other.SetPos(11400.0f, 2000.0f);
+		return true;
+	}
+	return false;
+}
+
 //******************************************************************************************************************************
 
 //**************************************************************äÍà·Á************************************************************
@@ -1148,10 +1393,10 @@ bool Collider::CheckCollistionbullmon7(Collider other, sf::Vector2f& direction)
 	}
 	return false;
 }
-bool Collider::CheckCollistionbullBoss(Collider other, sf::Vector2f& direction)
+bool Collider::CheckCollistionbullBoss1(Collider other, sf::Vector2f& direction)
 {
 	sf::Vector2f otherPosition = other.GetPosition();
-	sf::Vector2f otherHalfSize = other.GetHalfPointSize();
+	sf::Vector2f otherHalfSize = other.GetFullSize();
 	sf::Vector2f thisPosition = GetPosition();
 	sf::Vector2f thisHalfSize = GetHalfSize();
 
@@ -1160,8 +1405,85 @@ bool Collider::CheckCollistionbullBoss(Collider other, sf::Vector2f& direction)
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
 
-	if (intersectX < 0.0f && intersectY < 0.0f) {
+	if (intersectX < -157.0f && intersectY < 62.0f) {
+		hpBoss -= 1;
+		if (hpBoss == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 1000;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbullBoss2(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetFullSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if (intersectX < -280.0f && intersectY < 77.0f) {
+		hpBoss -= 1;
+		if (hpBoss == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 1000;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbullBoss3(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetFullSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if (intersectX < 58.0f && intersectY < 62.0f) {
+		hpBoss -= 1;
+		if (hpBoss == 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 1000;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbullBoss4(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetFullSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if (intersectX < -143.0f && intersectY < 77.0f) {
 		hpBoss -= 1;
 		if (hpBoss == 0) {
 			other.SetPos(0.0f, 1000.0f);
@@ -1172,6 +1494,7 @@ bool Collider::CheckCollistionbullBoss(Collider other, sf::Vector2f& direction)
 	return false;
 }
 //*******************************************************************************************************************************************
+
 //**************************************************************àªç¤ª¹ÁÍ¹¡Ñº¡ÃÐÊØ¹¾ÔàÈÉ**********************************************************
 bool Collider::CheckCollistionsupbullmon(Collider other, sf::Vector2f& direction)
 {
@@ -1341,10 +1664,10 @@ bool Collider::CheckCollistionsupbullmon7(Collider other, sf::Vector2f& directio
 	}
 	return false;
 }
-bool Collider::CheckCollistionsupbullBoss(Collider other, sf::Vector2f& direction)
+bool Collider::CheckCollistionsupbullBoss1(Collider other, sf::Vector2f& direction)
 {
 	sf::Vector2f otherPosition = other.GetPosition();
-	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f otherHalfSize = other.GetFullSize();
 	sf::Vector2f thisPosition = GetPosition();
 	sf::Vector2f thisHalfSize = GetHalfSize();
 
@@ -1353,9 +1676,85 @@ bool Collider::CheckCollistionsupbullBoss(Collider other, sf::Vector2f& directio
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
 
-	if (intersectX < 0.0f && intersectY < 0.0f) {
-	//	printf("%d\n", hpmon7);
+	if (intersectX < -150.0f && intersectY < 52.0f) {
+		hpBoss -= 2;
+		if (hpBoss <= 0) {
+			other.SetPos(0.0f, 2000.0f);
+			score += 1000;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionsupbullBoss2(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetFullSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if ((intersectX > -85.0f && intersectX < 100.0f) && intersectY < 67.0f) {
+		hpBoss -= 2;
+		if (hpBoss <= 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 1000;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionsupbullBoss3(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetFullSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if (intersectX < 68.0f && intersectY < 52.0f) {
+		hpBoss -= 2;
+		if (hpBoss <= 0) {
+			other.SetPos(0.0f, 1000.0f);
+			score += 1000;
+		}
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionsupbullBoss4(Collider other, sf::Vector2f& direction)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetFullSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if (intersectX < -118.0f && intersectY < 67.0f) {
 		hpBoss -= 2;
 		if (hpBoss <= 0) {
 			other.SetPos(0.0f, 1000.0f);
@@ -1425,3 +1824,27 @@ void Boss2::Draw(sf::RenderWindow& window)
 }
 
 //********************************************************************************************************************************************
+
+BossAct1::BossAct1(sf::Vector2f position) 
+{
+	Bossact1.setSize(sf::Vector2f(270, 470));
+	Bossact1.setPosition(sf::Vector2f (position.x,position.y));
+	Bossact1.setFillColor(sf::Color::Transparent);
+}
+void BossAct1::Draw(sf::RenderWindow& window)
+{
+	window.draw(Bossact1);
+}
+
+//*********************************************************************************************************************************************
+
+BossAct2::BossAct2(sf::Vector2f position)
+{
+	Bossact2.setSize(sf::Vector2f(500, 470));
+	Bossact2.setPosition(sf::Vector2f(position.x, position.y));
+	Bossact2.setFillColor(sf::Color::Transparent);
+}
+void BossAct2::Draw(sf::RenderWindow& window)
+{
+	window.draw(Bossact2);
+}

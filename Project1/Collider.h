@@ -9,8 +9,20 @@ public:
 	~Collider();
 
 	bool CheckCollistionbull(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBossbull(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBossplay(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionBossbull1(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionBossbull2(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionBossbull3(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionBossbull4(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionBosssupbull1(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionBosssupbull2(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionBosssupbull3(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionBosssupbull4(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionBossplayAct1(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionBossplayAct3(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionBossplayAct2(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionBossplayAct4(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionBossplaybulletboss(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionbulletBossplayer(Collider other, sf::Vector2f& direction, float push);
 
 	bool CheckCollistionbullmon(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionbullmon2(Collider other, sf::Vector2f& direction);
@@ -19,7 +31,10 @@ public:
 	bool CheckCollistionbullmon5(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionbullmon6(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionbullmon7(Collider other, sf::Vector2f& direction);
-	bool CheckCollistionbullBoss(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionbullBoss1(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionbullBoss2(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionbullBoss3(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionbullBoss4(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionmonplay(Collider other, sf::Vector2f& direction);
 
 	bool CheckCollistionsupbullmon(Collider other, sf::Vector2f& direction);
@@ -29,7 +44,10 @@ public:
 	bool CheckCollistionsupbullmon5(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionsupbullmon6(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionsupbullmon7(Collider other, sf::Vector2f& direction);
-	bool CheckCollistionsupbullBoss(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionsupbullBoss1(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionsupbullBoss2(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionsupbullBoss3(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionsupbullBoss4(Collider other, sf::Vector2f& direction);
 
 	bool CheckCollistionChest(Collider other);
 
@@ -44,6 +62,7 @@ public:
 	sf::Vector2f GetFourSize() { return body.getSize() / 3.0f; }
 	sf::Vector2f GetThreePointSize() { return body.getSize() / 3.5f; }
 	sf::Vector2f GetHalfPointSize() { return body.getSize() / 2.5f; }
+	sf::Vector2f GetFullSize() { return body.getSize() / 1.5f; }
 
 private:
 	sf::RectangleShape& body;
