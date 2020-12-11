@@ -21,8 +21,8 @@ public:
 	bool CheckCollistionBossplayAct3(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionBossplayAct2(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionBossplayAct4(Collider other, sf::Vector2f& direction);
-	bool CheckCollistionBossplaybulletboss(Collider other, sf::Vector2f& direction);
-	bool CheckCollistionbulletBossplayer(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionbulletBossplayer2(Collider other, sf::Vector2f& direction, float push);
+	bool CheckCollistionbulletBossplayer1(Collider other, sf::Vector2f& direction, float push);
 
 	bool CheckCollistionbullmon(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionbullmon2(Collider other, sf::Vector2f& direction);

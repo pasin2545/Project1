@@ -37,6 +37,7 @@ bool chest_dis3 = false;
 bool hp_canDown = true;
 bool BurnTime = true;
 bool Potion = false;
+bool showIcon = false;
 
 bool EndBossAction = true;
 bool ActBoss1 = false;
@@ -104,7 +105,7 @@ sf::Texture* superBULLET;
 		sf::Texture BULLET;
 		void set(float x, float y)
 		{
-			BULLET.loadFromFile("bullet.png");
+			BULLET.loadFromFile("bullet2.png");
 			bullet.setTexture(&BULLET);
 			bullet.setSize(sf::Vector2f(30.0f, 30.0f));
 			bullet.setPosition(x, y);
@@ -118,10 +119,11 @@ sf::Texture* superBULLET;
 	class superBulleted {
 	public:
 		sf::RectangleShape superbullet;
-
+		sf::Texture superBULLET;
 		void set(float x, float y)
 		{
-			superbullet.setTexture(superBULLET);
+			superBULLET.loadFromFile("superbullet.png");
+			superbullet.setTexture(&superBULLET);
 			superbullet.setSize(sf::Vector2f(50.0f, 50.0f));
 			superbullet.setPosition(x, y);
 		}
@@ -254,59 +256,79 @@ int main() {
 	sf::Texture playerTexture;
 	playerTexture.loadFromFile("image.png");
 	Player player(&playerTexture, sf::Vector2u(8, 6), 0.2f, 250.0f, 200.0f);
+	sf::Texture BrickTexture;
+	BrickTexture.loadFromFile("Brick.png");
+	sf::Texture floor1;
+	floor1.loadFromFile("floor1fix3.png");
+	sf::Texture floor2;
+	floor2.loadFromFile("floor2.png");
+	sf::Texture floor3;
+	floor3.loadFromFile("floor3.png");
+	sf::Texture floor4;
+	floor4.loadFromFile("floor4.png");
+	sf::Texture Box1;
+	Box1.loadFromFile("Box1.png");
+	sf::Texture Box2;
+	Box2.loadFromFile("Box2.png");
+	sf::Texture Box3;
+	Box3.loadFromFile("Box3.png");
+	sf::Texture Box4;
+	Box4.loadFromFile("Box4.png");
+	sf::Texture tower;
+	tower.loadFromFile("tower.png");
 
 	std::vector<Platform> platforms;
 
 	//***********************Box*************************************************************
-	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 1000.0f), sf::Vector2f(-900.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(600.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(1450.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(6850.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 400.0f), sf::Vector2f(7400.0f, -175.0f)));
+	platforms.push_back(Platform(&Box1, sf::Vector2f(400.0f, 1000.0f), sf::Vector2f(-750.0f, -475.0f)));
+	platforms.push_back(Platform(&Box2, sf::Vector2f(400.0f, 200.0f), sf::Vector2f(500.0f, 0.0f)));
+	platforms.push_back(Platform(&Box3, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(600.0f, 0.0f)));
+	platforms.push_back(Platform(&Box3, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(1450.0f, 0.0f)));
+	platforms.push_back(Platform(&Box3, sf::Vector2f(200.0f, 350.0f), sf::Vector2f(6850.0f, 0.0f)));
+	platforms.push_back(Platform(&Box4, sf::Vector2f(300.0f, 400.0f), sf::Vector2f(7400.0f, -175.0f)));
 	//***************************************************************************************
 
 
 	//*********************************Brick*************************************************
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3050.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3350.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3650.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(4200.0f, 0.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5300.0f, -25.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5400.0f, -25.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5400.0f, -125.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -25.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -125.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -225.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -225.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -125.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -25.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6100.0f, -125.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6100.0f, -25.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6200.0f, -25.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8500.0f, -180.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -180.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9100.0f, -180.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -310.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9700.0f, -25.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10000.0f, -125.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10300.0f, -225.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10700.0f, -350.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3050.0f, 0.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3350.0f, 0.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(3650.0f, 0.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(4200.0f, 0.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5300.0f, -25.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5400.0f, -25.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5400.0f, -125.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -25.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -125.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(5500.0f, -225.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -225.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -125.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6000.0f, -25.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6100.0f, -125.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6100.0f, -25.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6200.0f, -25.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8500.0f, -180.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -180.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9100.0f, -180.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -310.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9700.0f, -25.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10000.0f, -125.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10300.0f, -225.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10700.0f, -350.0f)));
 	//***************************************************************************************
 
 
 	//*********************************Floor*************************************************
-	platforms.push_back(Platform(nullptr, sf::Vector2f(2500.0f, 350.0f), sf::Vector2f(300.0f, 200.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(2350.0f, 200.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(5050.0f, 200.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(6450.0f, 200.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(2200.0f, 350.0f), sf::Vector2f(8350.0f, 200.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(2000.0f, 350.0f), sf::Vector2f(12000.0f, -375.0f)));
+	platforms.push_back(Platform(&floor1, sf::Vector2f(2500.0f, 350.0f), sf::Vector2f(300.0f, 200.0f)));
+	platforms.push_back(Platform(&floor2, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(2350.0f, 200.0f)));
+	platforms.push_back(Platform(&floor2, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(5050.0f, 200.0f)));
+	platforms.push_back(Platform(&floor2, sf::Vector2f(1000.0f, 350.0f), sf::Vector2f(6450.0f, 200.0f)));
+	platforms.push_back(Platform(&floor3, sf::Vector2f(2200.0f, 350.0f), sf::Vector2f(8350.0f, 200.0f)));
+	platforms.push_back(Platform(&floor4, sf::Vector2f(2000.0f, 350.0f), sf::Vector2f(12000.0f, -375.0f)));
 	//***************************************************************************************
 	
 	//**************************************Tower**********************************************************
-	platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(11200.0f, -725.0f)));
-	platforms.push_back(Platform(nullptr, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(13150.0f, -725.0f)));
+	platforms.push_back(Platform(&tower, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(11155.0f, -1050.0f)));
+	platforms.push_back(Platform(&tower, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(13150.0f, -725.0f)));
 	//*****************************************************************************************************
 
 	sf::Texture monster1Texture;
@@ -498,6 +520,13 @@ int main() {
 	bg.setTexture(&bgTexture);
 	//****************************************************************
 
+	//****************************superbulletIcon*********************
+	sf::RectangleShape superIcon(sf::Vector2f(50.0f, 50.0f));
+	sf::Texture superIconTexture;
+	superIconTexture.loadFromFile("superbulleticon.png");
+	superIcon.setTexture(&superIconTexture);
+	//****************************************************************
+
 	float deltaTime = 1.0f;
 	sf::Clock clock;
 	float bosshit;
@@ -505,7 +534,7 @@ int main() {
 
 	while (window.isOpen()) {
 		sf::Vector2f pos = player.GetPosition();
-		printf("%d\n", hpBoss);
+		//printf("%d\n", hpBoss);
 
 		if (player.faceRight == false) {
 			pst = 1;
@@ -513,7 +542,7 @@ int main() {
 		if (player.faceRight == true) {
 			pst = 2;
 		}
-
+		//printf("%f\n", pos.y);
 		shoot(pos.x, pos.y);
 		shot(pos.x, pos.y);
 		if (superPower == true) {
@@ -553,6 +582,9 @@ int main() {
 		scoreText.setString(std::to_string(score));
 
 		bg.setPosition(pos.x - 768, pos.y - 384);
+		if (superPower == true) {
+			superIcon.setPosition(pos.x - 608, pos.y - 270);
+		}
 		heartbar0.setPosition(pos.x - 698, pos.y - 354);
 		heartbar1.setPosition(pos.x - 698, pos.y - 354);
 		heartbar2.setPosition(pos.x - 698, pos.y - 354);
@@ -607,7 +639,7 @@ int main() {
 				break;
 			}
 		}
-
+		
 		player.Update(deltaTime);
 		monster1.Updatem1(deltaTime);
 		monster2.Updatem2(deltaTime);
@@ -616,6 +648,12 @@ int main() {
 		monster5.Updatem5(deltaTime);
 		monster6.Updatem6(deltaTime);
 		monster7.Updatem7(deltaTime);
+		if (pos.y > 403.5) {
+			PlayerHP = 0;
+		}
+		if (hpBoss <= 0) {
+			hpBoss = 0;
+		}
 		if (startBossStage < 1500) {
 			Boss1.UpdateBoss1(deltaTime);
 		}
@@ -734,14 +772,13 @@ int main() {
 					BoxBossAct4.GetColliderAct2().CheckCollistionBosssupbull4(superbullet[j].GetCollider(), direction, 1.0f);
 				}
 			}
-
-			for (int j = 0; j < 3; j++) {
-				bulletboss1[j].GetCollider().CheckCollistionBossplaybulletboss(player.GetCollider(), direction);
-				player.GetCollider().CheckCollistionbulletBossplayer(bulletboss1[j].GetCollider(), direction,1.0f);
-			}
-			for (int j = 0; j < 3; j++) {
-				bulletboss3[j].GetCollider().CheckCollistionBossplaybulletboss(player.GetCollider(), direction);
-				player.GetCollider().CheckCollistionbulletBossplayer(bulletboss3[j].GetCollider(), direction, 1.0f);
+			if (player.GetPosition().x > 11200) {
+				for (int j = 0; j < 3; j++) {
+					player.GetCollider().CheckCollistionbulletBossplayer1(bulletboss1[j].GetCollider(), direction, 1.0f);
+				}
+				for (int j = 0; j < 3; j++) {
+					player.GetCollider().CheckCollistionbulletBossplayer2(bulletboss3[j].GetCollider(), direction, 1.0f);
+				}
 			}
 			monster1.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
 			monster2.GetCollider().CheckCollistionmonplay(player.GetCollider(), direction);
@@ -881,98 +918,103 @@ int main() {
 		if (PlayerHP == 3) {
 			window.draw(heartbar3);
 		}
-		if (hpBoss == 0) {
-			window.draw(Bossheartbar0);
+		if (player.GetPosition().x > 11200) {
+			if (hpBoss == 0) {
+				window.draw(Bossheartbar0);
+			}
+			if (hpBoss == 1) {
+				window.draw(Bossheartbar1);
+			}
+			if (hpBoss == 2) {
+				window.draw(Bossheartbar2);
+			}
+			if (hpBoss == 3) {
+				window.draw(Bossheartbar3);
+			}
+			if (hpBoss == 4) {
+				window.draw(Bossheartbar4);
+			}
+			if (hpBoss == 5) {
+				window.draw(Bossheartbar5);
+			}
+			if (hpBoss == 6) {
+				window.draw(Bossheartbar6);
+			}
+			if (hpBoss == 7) {
+				window.draw(Bossheartbar7);
+			}
+			if (hpBoss == 8) {
+				window.draw(Bossheartbar8);
+			}
+			if (hpBoss == 9) {
+				window.draw(Bossheartbar9);
+			}
+			if (hpBoss == 10) {
+				window.draw(Bossheartbar10);
+			}
+			if (hpBoss == 11) {
+				window.draw(Bossheartbar11);
+			}
+			if (hpBoss == 12) {
+				window.draw(Bossheartbar12);
+			}
+			if (hpBoss == 13) {
+				window.draw(Bossheartbar13);
+			}
+			if (hpBoss == 14) {
+				window.draw(Bossheartbar14);
+			}
+			if (hpBoss == 15) {
+				window.draw(Bossheartbar15);
+			}
+			if (hpBoss == 16) {
+				window.draw(Bossheartbar16);
+			}
+			if (hpBoss == 17) {
+				window.draw(Bossheartbar17);
+			}
+			if (hpBoss == 18) {
+				window.draw(Bossheartbar18);
+			}
+			if (hpBoss == 19) {
+				window.draw(Bossheartbar19);
+			}
+			if (hpBoss == 20) {
+				window.draw(Bossheartbar20);
+			}
+			if (hpBoss == 21) {
+				window.draw(Bossheartbar21);
+			}
+			if (hpBoss == 22) {
+				window.draw(Bossheartbar22);
+			}
+			if (hpBoss == 23) {
+				window.draw(Bossheartbar23);
+			}
+			if (hpBoss == 24) {
+				window.draw(Bossheartbar24);
+			}
+			if (hpBoss == 25) {
+				window.draw(Bossheartbar25);
+			}
+			if (hpBoss == 26) {
+				window.draw(Bossheartbar26);
+			}
+			if (hpBoss == 27) {
+				window.draw(Bossheartbar27);
+			}
+			if (hpBoss == 28) {
+				window.draw(Bossheartbar28);
+			}
+			if (hpBoss == 29) {
+				window.draw(Bossheartbar29);
+			}
+			if (hpBoss == 30) {
+				window.draw(Bossheartbar30);
+			}
 		}
-		if (hpBoss == 1) {
-			window.draw(Bossheartbar1);
-		}
-		if (hpBoss == 2) {
-			window.draw(Bossheartbar2);
-		}
-		if (hpBoss == 3) {
-			window.draw(Bossheartbar3);
-		}
-		if (hpBoss == 4) {
-			window.draw(Bossheartbar4);
-		}
-		if (hpBoss == 5) {
-			window.draw(Bossheartbar5);
-		}
-		if (hpBoss == 6) {
-			window.draw(Bossheartbar6);
-		}
-		if (hpBoss == 7) {
-			window.draw(Bossheartbar7);
-		}
-		if (hpBoss == 8) {
-			window.draw(Bossheartbar8);
-		}
-		if (hpBoss == 9) {
-			window.draw(Bossheartbar9);
-		}
-		if (hpBoss == 10) {
-			window.draw(Bossheartbar10);
-		}
-		if (hpBoss == 11) {
-			window.draw(Bossheartbar11);
-		}
-		if (hpBoss == 12) {
-			window.draw(Bossheartbar12);
-		}
-		if (hpBoss == 13) {
-			window.draw(Bossheartbar13);
-		}
-		if (hpBoss == 14) {
-			window.draw(Bossheartbar14);
-		}
-		if (hpBoss == 15) {
-			window.draw(Bossheartbar15);
-		}
-		if (hpBoss == 16) {
-			window.draw(Bossheartbar16);
-		}
-		if (hpBoss == 17) {
-			window.draw(Bossheartbar17);
-		}
-		if (hpBoss == 18) {
-			window.draw(Bossheartbar18);
-		}
-		if (hpBoss == 19) {
-			window.draw(Bossheartbar19);
-		}
-		if (hpBoss == 20) {
-			window.draw(Bossheartbar20);
-		}
-		if (hpBoss == 21) {
-			window.draw(Bossheartbar21);
-		}
-		if (hpBoss == 22) {
-			window.draw(Bossheartbar22);
-		}
-		if (hpBoss == 23) {
-			window.draw(Bossheartbar23);
-		}
-		if (hpBoss == 24) {
-			window.draw(Bossheartbar24);
-		}
-		if (hpBoss == 25) {
-			window.draw(Bossheartbar25);
-		}
-		if (hpBoss == 26) {
-			window.draw(Bossheartbar26);
-		}
-		if (hpBoss == 27) {
-			window.draw(Bossheartbar27);
-		}
-		if (hpBoss == 28) {
-			window.draw(Bossheartbar28);
-		}
-		if (hpBoss == 29) {
-			window.draw(Bossheartbar29);
-		}
-		if (hpBoss == 30) {
-			window.draw(Bossheartbar30);
+		if (showIcon == true) {
+			window.draw(superIcon);
 		}
 		window.draw(scoreText);
 		window.display();
@@ -1026,6 +1068,7 @@ void shootsuper(float x, float y) {
 	end = clock();
 	float dif = (float)(end - start) / CLOCKS_PER_SEC;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && dif > 0.5) {
+		showIcon = false;
 		use_superpower = true;
 		for (int i = 0; i < 1; i++) {
 			if (chksup_1[i] == 0) {
@@ -1075,7 +1118,7 @@ void ActionBoss1(float x,float y) {
 void shootBullBossR1(float x, float y) {
 	endboss = clock();
 	float dif = (float)(endboss - startboss) / CLOCKS_PER_SEC;
-	if (clockbpn > 0.5f && dif > 0.5) {
+	if (clockbpn > 1.5f && dif > 0.5) {
 		for (int i = 0; i < 3; i++) {
 			if (chkboss_1[i] != 1) {
 				bulletboss1[i].set(x -20.0f, y + 400.0f);
@@ -1093,7 +1136,7 @@ void shotBullBossR1(float x, float y)
 {
 	for (int i = 0; i < 3; i++) {
 		if (chkboss_1[i] == 1) {
-			float speed = 1.0f;
+			float speed = 0.5f;
 			bulletboss1[i].bulletboss1.move(-speed, 0);
 			if (bulletboss1[i].bulletboss1.getPosition().x < x - 820) {
 				if (bulletboss1[2].bulletboss1.getPosition().x < x - 820) {
@@ -1149,7 +1192,7 @@ void ActionBoss3(float x, float y) {
 void shootBullBossR3(float x, float y) {
 	endboss2 = clock();
 	float dif = (float)(endboss2 - startboss2) / CLOCKS_PER_SEC;
-	if (clockbpn2 > 0.5f && dif > 0.5) {
+	if (clockbpn2 > 1.5f && dif > 0.5) {
 		for (int i = 0; i < 3; i++) {
 			if (chkboss_3[i] != 1) {
 				bulletboss3[i].set(x - 20.0f, y + 400.0f);
@@ -1167,7 +1210,7 @@ void shotBullBossR3(float x, float y)
 {
 	for (int i = 0; i < 3; i++) {
 		if (chkboss_3[i] == 1) {
-			float speed = 1.0f;
+			float speed = 0.5f;
 			bulletboss3[i].bulletboss2.move(speed, 0);
 			if (bulletboss3[i].bulletboss2.getPosition().x > x + 820 ) {
 				if (bulletboss3[2].bulletboss2.getPosition().x > x + 820) {
@@ -1214,6 +1257,7 @@ void Chest::randitem()
 	random_item = rand() % 2;
 	if (random_item == 0) {
 		superPower = true;
+		showIcon = true;
 	}
 	if (random_item == 1) {
 		Potion = true;
@@ -1389,40 +1433,7 @@ bool Collider::CheckCollistionBossplayAct4(Collider other, sf::Vector2f& directi
 	return false;
 }
 
-bool Collider::CheckCollistionBossplaybulletboss(Collider other, sf::Vector2f& direction)
-{
-
-	sf::Vector2f otherPosition = other.GetPosition();
-	sf::Vector2f otherHalfSize = other.GetHalfSize();
-	sf::Vector2f thisPosition = GetPosition();
-	sf::Vector2f thisHalfSize = GetHalfSize();
-
-	float deltaX = otherPosition.x - thisPosition.x;
-	float deltaY = otherPosition.y - thisPosition.y;
-
-	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
-	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
-
-	if (intersectX < 0.0f && intersectY < 0.0f) {
-		TM += 1;
-		if (hp_canDown == true) {
-			if (TM == 1.0f) {
-				if (hitchk > 3.5f) {
-					PlayerHP--;
-				}
-			}
-			else if (TM > 1.0f) {
-				hp_canDown = false;
-			}
-		}
-		return true;
-	}
-	return false;
-}
-
-bool Collider::CheckCollistionbulletBossplayer(Collider other, sf::Vector2f& direction, float push)
+bool Collider::CheckCollistionbulletBossplayer1(Collider other, sf::Vector2f& direction, float push)
 {
 	sf::Vector2f otherPosition = other.GetPosition();
 	sf::Vector2f otherHalfSize = other.GetHalfSize();
@@ -1435,8 +1446,51 @@ bool Collider::CheckCollistionbulletBossplayer(Collider other, sf::Vector2f& dir
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
-	if (intersectX < -200.0f && intersectY < 10.0f) {
-		other.SetPos(11400.0f, 2000.0f);
+	if ((intersectX > -400.0f && intersectX < -176.0f) && intersectY < -66.5f) {
+		TM += 1;
+		if (hp_canDown == true) {
+			if (TM == 1.0f) {
+				if (hitchk > 3.5f) {
+					PlayerHP--;
+				}
+			}
+			else if (TM > 1.0f) {
+				hp_canDown = false;
+			}
+		}
+		other.SetPos(otherPosition.x, 2000.0f);
+		return true;
+	}
+	return false;
+}
+bool Collider::CheckCollistionbulletBossplayer2(Collider other, sf::Vector2f& direction, float push)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetFullSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	/*printf("xxxxx%fxxxxx\n", intersectX);
+	printf("%f\n", intersectY);*/
+
+	if ((intersectX > -180.0f &&intersectX < -108.0f) && intersectY < -99.0f) {
+		TM += 1;
+		if (hp_canDown == true) {
+			if (TM == 1.0f) {
+				if (hitchk > 3.5f) {
+					PlayerHP--;
+				}
+			}
+			else if (TM > 1.0f) {
+				hp_canDown = false;
+			}
+		}
+		other.SetPos(otherPosition.x, 2000.0f);
 		return true;
 	}
 	return false;
