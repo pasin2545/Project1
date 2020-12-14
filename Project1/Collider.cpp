@@ -30,6 +30,26 @@ bool Collider::CheckCollistionbull(Collider other, sf::Vector2f& direction, floa
 	return false;
 }
 
+bool Collider::CheckCollistionbullhouse(Collider other, sf::Vector2f& direction, float push)
+{
+	sf::Vector2f otherPosition = other.GetPosition();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
+	sf::Vector2f thisPosition = GetPosition();
+	sf::Vector2f thisHalfSize = GetHalfSize();
+
+	float deltaX = otherPosition.x - thisPosition.x;
+	float deltaY = otherPosition.y - thisPosition.y;
+	//(intersectX < 121.5f && (intersectY > -72.0f && intersectY < -1.0f)) || (intersectX < -89 && (intersectY > -72.0f && intersectY < -1.0f))
+	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+
+	if (intersectX +70  < 0.0f && intersectY < 0.0f) {
+		other.SetPos(0.0f, 2000.0f);
+		return true;
+	}
+	return false;
+}
+
 bool Collider::CheckCollistionBossbull1(Collider other, sf::Vector2f& direction, float push)
 {
 	sf::Vector2f otherPosition = other.GetPosition();
@@ -43,7 +63,7 @@ bool Collider::CheckCollistionBossbull1(Collider other, sf::Vector2f& direction,
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
-	if (intersectX < -157.0f && intersectY < 62.0f) {
+	if (intersectX < 0.0f && intersectY+100.0 < 0.0f) {
 		other.SetPos(0.0f, 2000.0f);
 		return true;
 	}
@@ -201,9 +221,11 @@ bool Collider::CheckCollistion(Collider other, sf::Vector2f& direction, float pu
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
-	if (intersectX < -100.0f && intersectY < 0.0f) {
-		push = std::min(std::max(push, 0.0f), 1.0f);
-		if (intersectX > intersectY) {
+	if (intersectX < 0.0f && intersectY < 0.0f)
+	{
+
+		if (intersectX > intersectY)
+		{
 			if (deltaX > 0.0f)
 			{
 				Move(intersectX * (1.0f - push), 0.0f);
@@ -214,11 +236,12 @@ bool Collider::CheckCollistion(Collider other, sf::Vector2f& direction, float pu
 			}
 			else
 			{
-				Move(-intersectY * (1.0f - push), 0.0f);
-				other.Move(intersectY * push, 0.0f);
+				Move(-intersectX * (1.0f - push), 0.0f);
+				other.Move(intersectX * push, 0.0f);
 
 				direction.x = -1.0f;
 				direction.y = 0.0f;
+
 			}
 		}
 		else
@@ -233,7 +256,7 @@ bool Collider::CheckCollistion(Collider other, sf::Vector2f& direction, float pu
 			}
 			else
 			{
-				Move(0.0f, -intersectY * (1.0f - push));
+				Move(-0.0f, intersectY * (1.0f - push));
 				other.Move(0.0f, intersectY * push);
 
 				direction.x = 0.0f;

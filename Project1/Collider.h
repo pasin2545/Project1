@@ -35,7 +35,8 @@ public:
 	bool CheckCollistionbullBoss2(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionbullBoss3(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionbullBoss4(Collider other, sf::Vector2f& direction);
-	bool CheckCollistionmonplay(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionmonplaydog(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionmonplayhorse(Collider other, sf::Vector2f& direction);
 
 	bool CheckCollistionsupbullmon(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionsupbullmon2(Collider other, sf::Vector2f& direction);
@@ -48,6 +49,7 @@ public:
 	bool CheckCollistionsupbullBoss2(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionsupbullBoss3(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionsupbullBoss4(Collider other, sf::Vector2f& direction);
+	bool CheckCollistionbullhouse(Collider other, sf::Vector2f& direction, float push);
 
 	bool CheckCollistionChest(Collider other);
 

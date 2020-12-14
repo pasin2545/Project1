@@ -6,8 +6,8 @@ monster6::monster6(sf::Texture* texture, sf::Vector2u imageCount, float switchTi
 	rowm6 = 0;
 	faceRightm6 = true;
 
-	bodym6.setSize(sf::Vector2f(240.0f, 160.0f));
-	bodym6.setPosition(8100.0f, -138.0f);
+	bodym6.setSize(sf::Vector2f(240.0f / 1.2, 160.0f / 1.2));
+	bodym6.setPosition(8100.0f, -138.0+26.0f);
 	bodym6.setTexture(texture);
 }
 

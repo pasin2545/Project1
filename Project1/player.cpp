@@ -8,9 +8,9 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	this->jumpHeight = jumpHeight;
 	row = 0;
 	faceRight = true;
-	body.setSize(sf::Vector2f(290.0f, 230.0f));
+	body.setSize(sf::Vector2f(130.0f, 140.0f));
 	body.setOrigin(body.getSize() / 2.0f);
-	body.setPosition(11900.0f, -1025.0f);
+	body.setPosition(11900.0f, -1200.0f);
 	body.setTexture(texture);
 }
 
