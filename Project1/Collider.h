@@ -9,14 +9,6 @@ public:
 	~Collider();
 
 	bool CheckCollistionbull(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBossbull1(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBossbull2(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBossbull3(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBossbull4(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBosssupbull1(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBosssupbull2(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBosssupbull3(Collider other, sf::Vector2f& direction, float push);
-	bool CheckCollistionBosssupbull4(Collider other, sf::Vector2f& direction, float push);
 	bool CheckCollistionBossplayAct1(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionBossplayAct3(Collider other, sf::Vector2f& direction);
 	bool CheckCollistionBossplayAct2(Collider other, sf::Vector2f& direction);

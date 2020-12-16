@@ -1,4 +1,5 @@
 #include<SFML/Graphics.hpp>
+#include<SFML/Audio.hpp>
 #include<iostream>
 #include<stdlib.h>
 #include<time.h>
@@ -6,6 +7,9 @@
 #include"Animation2.h"
 #include"player.h"
 #include<vector>
+#include<utility>
+#include<algorithm>
+#include<string>
 #include"monster1.h"
 #include"monster2.h"
 #include"monster3.h"
@@ -16,6 +20,9 @@
 #include"Platform.h"
 #include"Collider.h"
 #include"Boss.h"
+#include"Textbox.h"
+using namespace sf;
+using namespace std;
 
 
 int chk_1[6] = { 0 };
@@ -38,6 +45,7 @@ bool hp_canDown = true;
 bool BurnTime = true;
 bool Potion = false;
 bool showIcon = false;
+bool GetBossfight = false;
 
 bool EndBossAction = true;
 bool ActBoss1 = false;
@@ -50,11 +58,10 @@ int hpmon1 = 2;
 int hpmon2 = 3;
 int hpmon3 = 3;
 int hpmon4 = 2;
-int hpmon5 = 3;
-int hpmon6 = 3;
-int hpmon7 = 3;
-int hpBoss = 20;
-int score = 0;
+int hpmon5 = 5;
+int hpmon6 = 5;
+int hpmon7 = 5;
+int hpBoss = 30;
 int TM=0;
 int PTM = 0;
 int sample = 0;
@@ -64,7 +71,7 @@ int state;
 
 int randomActBoss;
 
-clock_t start=-0.2,end = 0;
+clock_t start=-0.2,endd = 0;
 clock_t startboss = -0.2, endboss = 0;
 clock_t startboss2 = -0.2, endboss2 = 0;
 
@@ -94,7 +101,6 @@ void shootBullBossR3(float, float);
 void shotBullBossR3(float, float);
 void ActionBoss3(float, float);
 void ActionBoss4();
-
 
 
 //***********************************************class PlayerBullet**********************************
@@ -233,6 +239,74 @@ sf::Texture* superBULLET;
 		Collider GetColliderAct2() { return Collider(Bossact2); }
 	};
 
+	string totime(int x)
+	{
+
+		int _min, _sec, _mill;
+		_min = x / 6000;
+		x = x % 6000;
+		_sec = x / 100;
+		x = x % 100;
+		_mill = x;
+
+		string _0min = "", _0sec = "", _0mill = "";
+		if (_min < 10)_0min = "0";
+		if (_sec < 10)_0sec = "0";
+		if (_mill < 10)_0mill = "0";
+		string _time = _0min + to_string(_min) + ":" + _0sec + to_string(_sec) + ":" + _0mill + to_string(_mill);
+		return _time;
+
+	}
+	int mins = 0, secs = 0;
+	void showTime(int x, int y, float mills, sf::RenderWindow& window, sf::Font* font)
+	{
+		mills = int(mills);
+		secs = (int(mills) / 100) % 60;
+		mins = (int(mills) / 100) / 60 % 60;
+		mills = int(mills) % 100;
+		int mills2 = int(mills);
+		String _secs, _mins;
+		if (secs < 10)_secs = "0";
+		else _secs = "";
+		if (mins < 10)_mins = "0";
+		else _mins = "";
+		String word = _mins + to_string(mins) + ":" + _secs + to_string(secs) + ":" + to_string(mills2);
+
+		sf::Text text;
+		text.setFont(*font);
+		text.setPosition(x, y);
+		text.setString(word);
+		text.setCharacterSize(75);
+
+
+		window.draw(text);
+	}
+	void showcount(int x, int y, int count, sf::RenderWindow& window, sf::Font* font)
+	{
+
+		sf::Text text;
+		text.setFont(*font);
+		text.setPosition(x, y);
+		text.setString(to_string(count));
+		text.setCharacterSize(60);
+		text.setFillColor(Color::Black);
+		window.draw(text);
+	}
+	void showHighScore(int x, int y, string word, sf::RenderWindow& window, sf::Font* font)
+	{
+
+		sf::Text text;
+		text.setFont(*font);
+		text.setPosition(x, y);
+		text.setString(word);
+		if (word == "HIGHSCORE")
+			text.setCharacterSize(120);
+		else
+			text.setCharacterSize(50);
+		window.draw(text);
+
+	}
+
 	superBulleted superbullet[1];
 	Bulleted bullet[6];
 	BulletBoss bulletboss1[3];
@@ -251,6 +325,92 @@ sf::Texture* superBULLET;
 
 //============================================================================== main ======================================================
 int main() {
+	std::string sname = "unknown";
+	int sscore = 9999999;
+	int state = 0;
+	sf::Font font;
+
+	int score[6] = {};
+	std::string name[6] = {};
+	char temp[255] = {};
+
+	std::vector <std::pair<int, std::string>> userScore;
+	FILE* fp;
+	// high score
+	
+		font.loadFromFile("Silver.ttf");
+		fp = fopen("Score.txt", "r");
+		for (int i = 0; i < 5; i++)
+		{
+			
+			fscanf(fp, "%s", &temp);
+			name[i] = temp;
+
+			fscanf(fp, "%d", &score[i]);
+			if (score[i] == 0)
+				score[i] = 9999999;
+			userScore.push_back(make_pair(score[i], name[i]));
+			//cout << temp << " " << score;
+		}
+		//userScore.push_back(make_pair(sscore, sname));
+		sort(userScore.begin(), userScore.end());
+		fclose(fp);
+
+		
+
+		for (int i = 0; i < 5; i++)
+		{
+			cout << userScore[i].first<<" ";
+			cout << userScore[i].second<<endl;
+			//userScore.push_back(make_pair(score[i], name[i]));
+			//cout << temp << " " << score;
+		}
+
+
+start:;
+
+	chk_1[6] = { 0 };
+	pst = 0;
+
+	chksup_1[1] = { 0 };
+
+
+	chkboss_1[3] = { 0 };
+	chkboss_3[3] = { 0 };
+
+	chest_open = false;
+	superPower = false;
+	use_superpower = false;
+	chest_dis1 = false;
+	chest_dis2 = false;
+	chest_dis3 = false;
+	hp_canDown = true;
+	BurnTime = true;
+	Potion = false;
+	showIcon = false;
+
+	EndBossAction = true;
+	ActBoss1 = false;
+	ActBoss2 = false;
+	ActBoss3 = false;
+	ActBoss4 = false;
+
+	PlayerHP = 3;
+	hpmon1 = 2;
+	hpmon2 = 3;
+	hpmon3 = 3;
+	hpmon4 = 2;
+	hpmon5 = 5;
+	hpmon6 = 5;
+	hpmon7 = 5;
+	hpBoss = 30;
+	//score = 0;
+	TM = 0;
+	PTM = 0;
+	sample = 0;
+	sample2 = 0;
+	startBossStage = 0;
+	state;
 	sf::RenderWindow window(sf::VideoMode(1536, 768), "2D Game", sf::Style::Close | sf::Style::Close);
 	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(VIEW_LENGTH, VIEW_HEIGHT));
 
@@ -307,10 +467,10 @@ int main() {
 	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6100.0f, -125.0f)));
 	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6100.0f, -25.0f)));
 	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(6200.0f, -25.0f)));
-	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8500.0f, -180.0f)));
-	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -180.0f)));
-	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9100.0f, -180.0f)));
-	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -310.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8050.0f, -280.0f)));
+	
+	/*platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9100.0f, -180.0f)));
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8800.0f, -310.0f)));*/
 	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(9700.0f, -25.0f)));
 	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10000.0f, -125.0f)));
 	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(10300.0f, -225.0f)));
@@ -328,8 +488,10 @@ int main() {
 	//***************************************************************************************
 	
 	//**************************************Tower**********************************************************
+	platforms.push_back(Platform(&BrickTexture, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(8600.0f, -280.0f)));
 	platforms.push_back(Platform(&tower, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(11155.0f, -1050.0f)));
 	platforms.push_back(Platform(&tower, sf::Vector2f(300.0f, 1000.0f), sf::Vector2f(13150.0f, -725.0f)));
+
 	//*****************************************************************************************************
 
 	sf::Texture monster1Texture;
@@ -342,9 +504,9 @@ int main() {
 	monster3Texture.loadFromFile("monster3.png");
 	monster3 monster3(&monster3Texture, sf::Vector2u(7, 1), 0.3f, 200.0f);
 	monster4 monster4(&monster1Texture, sf::Vector2u(5, 1), 0.3f, 200.0f);
-	monster5 monster5(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
-	monster6 monster6(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
-	monster7 monster7(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 200.0f);
+	monster5 monster5(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 800.0f);
+	monster6 monster6(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 800.0f);
+	monster7 monster7(&monster2Texture, sf::Vector2u(4, 1), 0.3f, 800.0f);
 	sf::Texture BossTexture;
 	sf::Texture BossTexture2;
 	BossTexture.loadFromFile("Boss.png");
@@ -355,16 +517,16 @@ int main() {
 	ChestTexture.loadFromFile("Chestfix.png");
 	Chest chest(&ChestTexture, sf::Vector2f(1100.0f, -20.0f));
 	Chest chest2(&ChestTexture, sf::Vector2f(4900.0f, -20.0f));
-	Chest chest3(&ChestTexture, sf::Vector2f(8770.0f, -405.0f));
+	Chest chest3(&ChestTexture, sf::Vector2f(8800.0f, -405.0f));
 	BossAct1 BoxBossAct1(sf::Vector2f(12475.0f, -1025.0f));
 	BossAct2 BoxBossAct2(sf::Vector2f(12475.0f, -1040.0f));
 	BossAct1 BoxBossAct3(sf::Vector2f(11550.0f, -1025.0f));
 	BossAct2 BoxBossAct4(sf::Vector2f(11425.0f, -1040.0f));
 
-	sf::Font font;
+	sf::Font textfont;
 	font.loadFromFile("Silver.ttf");
 	sf::Text scoreText;
-	scoreText.setFont(font);
+	scoreText.setFont(textfont);
 	scoreText.setFillColor(sf::Color::White);
 	scoreText.setCharacterSize(64);
 
@@ -514,24 +676,48 @@ int main() {
 	Bossheartbar30.setTexture(&Bossheartbar30Texture);
 	//****************************************************************
 
+	//******************************************sound effect**********************************************
+	sf::SoundBuffer titleBack;
+	titleBack.loadFromFile("Title.wav");
+	sf::Sound TitleBacksound;
+	TitleBacksound.setBuffer(titleBack);
+	sf::SoundBuffer gameBack;
+	gameBack.loadFromFile("Game.wav");
+	sf::Sound gameBacksound;
+	gameBacksound.setBuffer(gameBack);
+	if (state == 1) {
+		gameBacksound.setLoop(false);
+	}
+	if (state == 0) {
+		TitleBacksound.setLoop(true);
+	}
+	if (state == 1) {
+		gameBacksound.play();
+	}
+	if (state == 0) {
+		TitleBacksound.play();
+	}
+
+	//****************************************************************************************************
+
 	//****************************************** Menu Button**********************************************
 	// menu buttonTexture
 		sf::Texture btnplayTexture, backTexture;
 		sf::Texture hsTexture, settingTexture, exitTexture, commingTexture, returnTexture, gameoverTexture, playagainTexture;
 
 
-		sf::RectangleShape back(sf::Vector2f(1400.0f, 700.0f));
+		sf::RectangleShape back(sf::Vector2f(1536.0f, 768.0f));
 
 		sf::RectangleShape btnplay(sf::Vector2f(1300.0f / 3, 300.0f / 3)), sbtnplay(sf::Vector2f(1300.0f / 3 * 1.2, 300.0f / 3 * 1.2));
 		sf::RectangleShape btnhs(sf::Vector2f(369.0f, 97.0f)), sbtnhs(sf::Vector2f(369.0f * 1.2, 97.0f * 1.2));
 		sf::RectangleShape btnsetting(sf::Vector2f(540.0f / 1.8, 322.0f / 1.8)), sbtnsetting(sf::Vector2f(540.0f / 1.8 * 1.2, 322.0f / 1.8 * 1.2));
 		sf::RectangleShape btnexit(sf::Vector2f(540.0f / 2.5, 240.0f / 2.5)), sbtnexit(sf::Vector2f(540.0f / 2.5 * 1.2, 240.0f / 2.5 * 1.2));
 		sf::RectangleShape comming(sf::Vector2f(1200.0f / 1.5, 450.0f / 1.5));
-		sf::RectangleShape btnreturn(sf::Vector2f(280.0 / 3.5, 280.0 / 3.5)), sbtnreturn(sf::Vector2f(280.0 / 3.5 * 1.2, 280.0 / 3.5 * 1.2));
+		sf::RectangleShape btnreturn(sf::Vector2f(1030.0 / 3.5, 400.0 / 3.5)), sbtnreturn(sf::Vector2f(1030.0 / 3.5 * 1.2, 400.0 / 3.5 * 1.2));
 		sf::RectangleShape btngameover(sf::Vector2f(804.0 / 1, 422.0 / 1));
 		sf::RectangleShape btnplayagain(sf::Vector2f(738.0 / 2.5, 419.0 / 2.5)), sbtnplayagain(sf::Vector2f(738.0 / 2.5 * 1.2, 419.0 / 2.5 * 1.2));
 
-		backTexture.loadFromFile("image/menu/back.jpg");
+		backTexture.loadFromFile("manu-background.png");
 		back.setTexture(&backTexture);
 
 		btnplayTexture.loadFromFile("startbutton.PNG");
@@ -542,27 +728,13 @@ int main() {
 		btnhs.setTexture(&hsTexture);
 		sbtnhs.setTexture(&hsTexture);
 
-		/*settingTexture.loadFromFile("image/menu/setting.PNG");
-		btnsetting.setTexture(&settingTexture);
-		sbtnsetting.setTexture(&settingTexture);*/
-
 		exitTexture.loadFromFile("Exit.PNG");
 		btnexit.setTexture(&exitTexture);
 		sbtnexit.setTexture(&exitTexture);
 
-		/*commingTexture.loadFromFile("image/menu/commingsoon.PNG");
-		comming.setTexture(&commingTexture);*/
-
-		returnTexture.loadFromFile("image/menu/return.PNG");
+		returnTexture.loadFromFile("return.PNG");
 		btnreturn.setTexture(&returnTexture);
 		sbtnreturn.setTexture(&returnTexture);
-
-		gameoverTexture.loadFromFile("image/menu/btngameover.PNG");
-		btngameover.setTexture(&gameoverTexture);
-
-		playagainTexture.loadFromFile("image/menu/btnplayagain.PNG");
-		btnplayagain.setTexture(&playagainTexture);
-		sbtnplayagain.setTexture(&playagainTexture);
 
 	//***********************Background*******************************
 	sf::RectangleShape bg(sf::Vector2f(1536.0f, 768.0f));
@@ -578,34 +750,123 @@ int main() {
 	superIcon.setTexture(&superIconTexture);
 	//****************************************************************
 
+	//***************************Gover********************************
+	sf::RectangleShape Gover(sf::Vector2f(1536.0f, 768.0f));
+	sf::Texture GoverTexture;
+	GoverTexture.loadFromFile("Gameover.png");
+	Gover.setTexture(&GoverTexture);
+	//****************************************************************
+
+	//***************************victory******************************
+	sf::RectangleShape Victory(sf::Vector2f(1536.0f, 768.0f));
+	sf::Texture VictoryTexture;
+	VictoryTexture.loadFromFile("Victory.png");
+	Victory.setTexture(&VictoryTexture);
+	//****************************************************************
+
+	//***************************return*******************************
+	sf::RectangleShape backtomenu(sf::Vector2f(460.0f,190.0f));
+	sf::Texture backtomenuTexture;
+	backtomenuTexture.loadFromFile("return-menu1.png");
+	backtomenu.setTexture(&backtomenuTexture);
+	//****************************************************************
+
+	//**************************return ex*****************************
+	sf::RectangleShape exbacktomenu(sf::Vector2f(460.0f, 190.0f));
+	sf::Texture exbacktomenuTexture;
+	exbacktomenuTexture.loadFromFile("return-menu2.png");
+	exbacktomenu.setTexture(&exbacktomenuTexture);
+	//****************************************************************
+
+	//*************************Name***********************************
+	Textbox playernametextbox(70, sf::Color::White, true);
+	playernametextbox.setFont(font);
+	playernametextbox.setPosition({ player.GetPosition().x -700, player.GetPosition().y +0 });
+	playernametextbox.setlimit(true, 10);
+	//****************************************************************
+
 	float deltaTime = 1.0f;
 	sf::Clock clock;
 	float bosshit;
 	sf::Clock bossht;
+	Clock Cclock;
+	int mins = 0, secons = 0, mills = 0;
+	sf::Event event;
 
 	while (window.isOpen()) {
+		if (state == -1)
+		{
+			window.clear();
+
+			btnreturn.setPosition(player.GetPosition().x + 400, player.GetPosition().y + 210);
+			sbtnreturn.setPosition(player.GetPosition().x + 370, player.GetPosition().y + 190);
+
+			Vector2i mouse = Mouse::getPosition(window);
+			printf("mousepos x= %.0f y= %.0f\n", (float)mouse.x, (float)mouse.y);
+
+			back.setPosition(player.GetPosition().x - 768, player.GetPosition().y - 383);
+
+			showHighScore(player.GetPosition().x - 768, player.GetPosition().y - 383, "HIGHSCORE", window, &font);
+
+			for (int i = 4; i >= 0; i--)
+			{
+				string _time = totime(userScore[i].first);
+				showHighScore(player.GetPosition().x - 768+400, player.GetPosition().y - 383+150 + (i + 1) * 60, userScore[i].second, window, &font);
+				showHighScore(player.GetPosition().x - 668+100+400, player.GetPosition().y - 383+150 + (i + 1) * 60, _time, window, &font);
+			}
+
+			if (mouse.x > 1200 and mouse.x < 1441 and mouse.y>611 and mouse.y <694)
+				window.draw(sbtnreturn);
+			else
+				window.draw(btnreturn);
+
+			window.display();
+
+			if (mouse.x > 1200 and mouse.x < 1441 and mouse.y>611 and mouse.y < 694)
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					state = 0;
+
+			while (window.pollEvent(event))
+			{
+				switch (event.type)
+				{
+				case Event::Closed:
+					window.close();
+					break;
+				case Event::Resized:
+					ResizeView(window, view);
+					break;
+				}
+			}
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				if (mouse.x > 738 and mouse.x < 1080 and mouse.y>64 and mouse.y < 130)
+				{
+					state = 1;
+				}
+			}
+
+		}
 		//*******************************************************Menu**************************************
 		if (state == 0)
 		{
 			//printf("player = %.0f %.0f %.0f %.0f %.0f ", player.GetPosition().x, player.GetPosition().y, enemyx, enemyy);
 
 			// all button-------------------------------------------------------------------
-			btnplay.setPosition(player.GetPosition().x, player.GetPosition().y - 300);
-			sbtnplay.setPosition(player.GetPosition().x - 20, player.GetPosition().y - 310);
+			btnplay.setPosition(player.GetPosition().x-260, player.GetPosition().y - 150);
+			sbtnplay.setPosition(player.GetPosition().x - 300, player.GetPosition().y - 150);
 
-			btnhs.setPosition(player.GetPosition().x + 25, player.GetPosition().y - 165);
-			sbtnhs.setPosition(player.GetPosition().x, player.GetPosition().y - 175);
+			btnhs.setPosition(player.GetPosition().x - 232, player.GetPosition().y +20);
+			sbtnhs.setPosition(player.GetPosition().x- 255, player.GetPosition().y + 10);
 
 
 			/*btnsetting.setPosition(player.GetPosition().x + 55, player.GetPosition().y - 30);
 			sbtnsetting.setPosition(player.GetPosition().x + 30, player.GetPosition().y - 50);*/
 
-			btnexit.setPosition(player.GetPosition().x + 105, player.GetPosition().y + 170);
-			sbtnexit.setPosition(player.GetPosition().x + 95, player.GetPosition().y + 160);
+			btnexit.setPosition(player.GetPosition().x - 150, player.GetPosition().y + 170);
+			sbtnexit.setPosition(player.GetPosition().x -170, player.GetPosition().y + 160);
 
 			//comming.setPosition(player.GetPosition().x - 400, player.GetPosition().y - 150);
-
-
 
 
 			//-------------------------------------------------------------------------------
@@ -615,7 +876,7 @@ int main() {
 
 
 
-			back.setPosition(player.GetPosition().x - 700, player.GetPosition().y - 350);
+			back.setPosition(player.GetPosition().x - 768, player.GetPosition().y - 383);
 
 			window.clear(sf::Color(150, 150, 150));
 			view.setCenter(player.GetPosition());
@@ -624,50 +885,84 @@ int main() {
 			window.draw(back);
 
 
-			if (mouse.x > 738 and mouse.x < 1080 and mouse.y>64 and mouse.y < 130)
+			if (mouse.x > 559 and mouse.x < 910 and mouse.y>251 and mouse.y < 325)
 				window.draw(sbtnplay);
 			else
 				window.draw(btnplay);
 
-			if (mouse.x > 720 and mouse.x < 1080 and mouse.y>187 and mouse.y < 281)
+			if (mouse.x > 582 and mouse.x < 877 and mouse.y>420 and mouse.y < 489)
 				window.draw(sbtnhs);
 			else
 				window.draw(btnhs);
 
-			/*if (mouse.x > 770 and mouse.x < 1040 and mouse.y>330 and mouse.y < 470)
-				window.draw(sbtnsetting);
-			else
-				window.draw(btnsetting);*/
 
-
-			if (mouse.x > 808 and mouse.x < 1017 and mouse.y>520 and mouse.y < 610)
+			if (mouse.x > 648 and mouse.x < 815 and mouse.y>570 and mouse.y < 649)
 				window.draw(sbtnexit);
 			else
 				window.draw(btnexit);
+			showHighScore(player.GetPosition().x - 700, player.GetPosition().y -50, "ENTER YOUR NAME", window, &font);
+			playernametextbox.drawTo(window);
 
-			if (mouse.x > 813 and mouse.x < 1010 and mouse.y>525 and mouse.y < 606)
+			if (mouse.x > 648 and mouse.x < 815 and mouse.y>570 and mouse.y < 649)
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 					window.close();
 
-			if (mouse.x > 770 and mouse.x < 1040 and mouse.y>330 and mouse.y < 470)
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-					state = 2;
-
-			if (mouse.x > 726 and mouse.x < 1079 and mouse.y>190 and mouse.y < 270)
+			if (mouse.x > 582 and mouse.x < 877 and mouse.y>420 and mouse.y < 489)
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 					state = -1;
 
 			window.display();
+			while (window.pollEvent(event))
+			{
+				switch (event.type)
+				{
+				case Event::Closed:
+					window.close();
+					break;
+				case Event::Resized:
+					ResizeView(window, view);
+					break;
+				case Event::TextEntered:
+					playernametextbox.typeOn(event);
+				}
+			}
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				if (mouse.x > 738 and mouse.x < 1080 and mouse.y>64 and mouse.y < 130)
-
+				if (mouse.x > 559 and mouse.x < 910 and mouse.y>251 and mouse.y < 325){
+					sname = playernametextbox.gettext();
+					if (sname == "\0")sname = "Unknow";
+					Cclock.restart();
 					state = 1;
+					goto start;
+				}
 			}
 		}
 		//*************************************************************************************************
+		if (state == 2) {
+			sf::Vector2i mouse = sf::Mouse::getPosition(window);
+			printf("mousepos x= %.0f y= %.0f\n", (float)mouse.x, (float)mouse.y);
+			Gover.setPosition(player.GetPosition().x - 768, player.GetPosition().y - 383);
+
+			backtomenu.setPosition(player.GetPosition().x - 240, player.GetPosition().y + 100);
+			exbacktomenu.setPosition(player.GetPosition().x - 240, player.GetPosition().y + 100);
+
+			window.draw(Gover);
+			if (mouse.x > 580 and mouse.x < 958 and mouse.y>506 and mouse.y < 650)
+				window.draw(backtomenu);
+			else
+				window.draw(exbacktomenu);
+			window.display();
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				if (mouse.x > 580 and mouse.x < 958 and mouse.y>506 and mouse.y < 650) {
+					state = 0;
+					goto start;
+				}
+			}
+		}
 		if (state == 1) {
+			cout << sname << endl;
 			sf::Vector2f pos = player.GetPosition();
 			//printf("%d\n", hpBoss);
 
@@ -688,6 +983,7 @@ int main() {
 			if (player.GetPosition().x > 11200) {
 				clockbpn = Bullpn.getElapsedTime().asSeconds();
 				clockbpn2 = Bullpn2.getElapsedTime().asSeconds();
+				GetBossfight = true;
 				startBossStage++;
 				if (startBossStage <= 1500) {
 					EndBossAction = false;
@@ -714,7 +1010,7 @@ int main() {
 				}
 			}
 
-			scoreText.setString(std::to_string(score));
+			//scoreText.setString(std::to_string(score));
 
 			bg.setPosition(pos.x - 768, pos.y - 384);
 			if (superPower == true) {
@@ -755,16 +1051,15 @@ int main() {
 			Bossheartbar2.setPosition(pos.x - 320, pos.y + 300);
 			Bossheartbar1.setPosition(pos.x - 320, pos.y + 300);
 			Bossheartbar0.setPosition(pos.x - 320, pos.y + 300);
-			scoreText.setPosition(pos.x + 600, pos.y - 354);
+			//scoreText.setPosition(pos.x + 600, pos.y - 354);
 			deltaTime = clock.restart().asSeconds();
 			if (deltaTime > 1.0f / 20.0f)
 				deltaTime = 1.0f / 20.0f;
 
-			sf::Event evnt;
-			while (window.pollEvent(evnt))
+			while (window.pollEvent(event))
 			{
 
-				switch (evnt.type)
+				switch (event.type)
 				{
 				case sf::Event::Closed:
 					window.close();
@@ -829,17 +1124,17 @@ int main() {
 					bullet[j].GetCollider().CheckCollistionbullmon6(monster6.GetCollider(), direction);
 					bullet[j].GetCollider().CheckCollistionbullmon7(monster7.GetCollider(), direction);
 					if (startBossStage < 1500 || ActBoss1 == true) {
-						bullet[j].GetCollider().CheckCollistionbullBoss1(BoxBossAct1.GetColliderAct1(), direction);
+						BoxBossAct1.GetColliderAct1().CheckCollistionbullBoss1(bullet[j].GetCollider(), direction);
 					}
 					if (ActBoss2 == true)
 					{
-						bullet[j].GetCollider().CheckCollistionbullBoss2(BoxBossAct2.GetColliderAct2(), direction);
+						BoxBossAct2.GetColliderAct2().CheckCollistionbullBoss2(bullet[j].GetCollider(), direction);
 					}
 					if (ActBoss3 == true) {
-						bullet[j].GetCollider().CheckCollistionbullBoss3(BoxBossAct3.GetColliderAct1(), direction);
+						BoxBossAct3.GetColliderAct1().CheckCollistionbullBoss3(bullet[j].GetCollider(), direction);
 					}
 					if (ActBoss4 == true) {
-						bullet[j].GetCollider().CheckCollistionbullBoss4(BoxBossAct4.GetColliderAct2(), direction);
+						BoxBossAct4.GetColliderAct2().CheckCollistionbullBoss4(bullet[j].GetCollider(), direction);
 					}
 					monster1.GetCollider().CheckCollistionbull(bullet[j].GetCollider(), direction, 1.0f);
 					monster2.GetCollider().CheckCollistionbullhouse(bullet[j].GetCollider(), direction, 1.0f);
@@ -848,19 +1143,6 @@ int main() {
 					monster5.GetCollider().CheckCollistionbullhouse(bullet[j].GetCollider(), direction, 1.0f);
 					monster6.GetCollider().CheckCollistionbullhouse(bullet[j].GetCollider(), direction, 1.0f);
 					monster7.GetCollider().CheckCollistionbullhouse(bullet[j].GetCollider(), direction, 1.0f);
-					if (startBossStage < 1500 || ActBoss1 == true) {
-						BoxBossAct1.GetColliderAct1().CheckCollistionBossbull1(bullet[j].GetCollider(), direction, 1.0f);
-					}
-					if (ActBoss2 == true)
-					{
-						BoxBossAct2.GetColliderAct2().CheckCollistionBossbull2(bullet[j].GetCollider(), direction, 1.0f);
-					}
-					if (ActBoss3 == true) {
-						BoxBossAct3.GetColliderAct1().CheckCollistionBossbull3(bullet[j].GetCollider(), direction, 1.0f);
-					}
-					if (ActBoss4 == true) {
-						BoxBossAct4.GetColliderAct2().CheckCollistionBossbull4(bullet[j].GetCollider(), direction, 1.0f);
-					}
 				}
 
 				for (int j = 0; j < 1; j++) {
@@ -873,17 +1155,17 @@ int main() {
 					superbullet[j].GetCollider().CheckCollistionsupbullmon6(monster6.GetCollider(), direction);
 					superbullet[j].GetCollider().CheckCollistionsupbullmon7(monster7.GetCollider(), direction);
 					if (startBossStage < 1500 || ActBoss1 == true) {
-						superbullet[j].GetCollider().CheckCollistionsupbullBoss1(BoxBossAct1.GetColliderAct1(), direction);
+						BoxBossAct1.GetColliderAct1().CheckCollistionsupbullBoss1(superbullet[j].GetCollider(), direction);
 					}
 					if (ActBoss2 == true)
 					{
-						superbullet[j].GetCollider().CheckCollistionsupbullBoss2(BoxBossAct2.GetColliderAct2(), direction);
+						BoxBossAct2.GetColliderAct2().CheckCollistionsupbullBoss2(superbullet[j].GetCollider(), direction);
 					}
 					if (ActBoss3 == true) {
-						superbullet[j].GetCollider().CheckCollistionsupbullBoss3(BoxBossAct3.GetColliderAct1(), direction);
+						BoxBossAct3.GetColliderAct1().CheckCollistionsupbullBoss3(superbullet[j].GetCollider(), direction);
 					}
 					if (ActBoss4 == true) {
-						superbullet[j].GetCollider().CheckCollistionsupbullBoss4(BoxBossAct4.GetColliderAct2(), direction);
+						BoxBossAct4.GetColliderAct2().CheckCollistionsupbullBoss4(superbullet[j].GetCollider(), direction);
 					}
 					monster1.GetCollider().CheckCollistionbull(superbullet[j].GetCollider(), direction, 1.0f);
 					monster2.GetCollider().CheckCollistionbullhouse(superbullet[j].GetCollider(), direction, 1.0f);
@@ -892,19 +1174,6 @@ int main() {
 					monster5.GetCollider().CheckCollistionbullhouse(superbullet[j].GetCollider(), direction, 1.0f);
 					monster6.GetCollider().CheckCollistionbullhouse(superbullet[j].GetCollider(), direction, 1.0f);
 					monster7.GetCollider().CheckCollistionbullhouse(superbullet[j].GetCollider(), direction, 1.0f);
-					if (startBossStage < 1500 || ActBoss1 == true) {
-						BoxBossAct1.GetColliderAct1().CheckCollistionBosssupbull1(superbullet[j].GetCollider(), direction, 1.0f);
-					}
-					if (ActBoss2 == true)
-					{
-						BoxBossAct2.GetColliderAct2().CheckCollistionBosssupbull2(superbullet[j].GetCollider(), direction, 1.0f);
-					}
-					if (ActBoss3 == true) {
-						BoxBossAct3.GetColliderAct1().CheckCollistionBosssupbull3(superbullet[j].GetCollider(), direction, 1.0f);
-					}
-					if (ActBoss4 == true) {
-						BoxBossAct4.GetColliderAct2().CheckCollistionBosssupbull4(superbullet[j].GetCollider(), direction, 1.0f);
-					}
 				}
 				if (player.GetPosition().x > 11200) {
 					for (int j = 0; j < 3; j++) {
@@ -957,10 +1226,12 @@ int main() {
 					chest_dis3 = true;
 				}
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::O)) {
-				PlayerHP = 3;
+			if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
+			{
+				state = 0;
+				goto start;
 			}
-
+			
 			if (PlayerHP > 3) {
 				PlayerHP = 3;
 			}
@@ -970,7 +1241,6 @@ int main() {
 
 			view.setCenter(player.GetPosition());
 			window.clear();
-
 			window.draw(bg);
 
 			window.setView(view);
@@ -1038,9 +1308,13 @@ int main() {
 				Boss2.Draw(window);
 			}
 
-			for (int i = 0; i < platforms.size() - v; i++)
+			for (int i = 0; i < platforms.size()-3 ; i++)
 			{
-				platforms[i].Draw(window);
+					platforms[i].Draw(window);
+			}
+			if (player.GetPosition().x > 11200) {
+				platforms[platforms.size() - 1].Draw(window);
+				platforms[platforms.size() - 2].Draw(window);
 			}
 
 			if (PlayerHP == 0) {
@@ -1090,41 +1364,113 @@ int main() {
 					window.draw(Bossheartbar10);
 				}
 				if (hpBoss == 11) {
-					window.draw(Bossheartbar12);
+					window.draw(Bossheartbar11);
 				}
 				if (hpBoss == 12) {
-					window.draw(Bossheartbar14);
+					window.draw(Bossheartbar12);
 				}
 				if (hpBoss == 13) {
-					window.draw(Bossheartbar16);
+					window.draw(Bossheartbar13);
 				}
 				if (hpBoss == 14) {
-					window.draw(Bossheartbar18);
+					window.draw(Bossheartbar14);
 				}
 				if (hpBoss == 15) {
-					window.draw(Bossheartbar20);
+					window.draw(Bossheartbar15);
 				}
 				if (hpBoss == 16) {
-					window.draw(Bossheartbar22);
+					window.draw(Bossheartbar16);
 				}
 				if (hpBoss == 17) {
-					window.draw(Bossheartbar24);
+					window.draw(Bossheartbar17);
 				}
 				if (hpBoss == 18) {
-					window.draw(Bossheartbar26);
+					window.draw(Bossheartbar18);
 				}
 				if (hpBoss == 19) {
-					window.draw(Bossheartbar28);
+					window.draw(Bossheartbar19);
 				}
 				if (hpBoss == 20) {
+					window.draw(Bossheartbar20);
+				}
+				if (hpBoss == 21) {
+					window.draw(Bossheartbar21);
+				}
+				if (hpBoss == 21) {
+					window.draw(Bossheartbar22);
+				}
+				if (hpBoss == 22) {
+					window.draw(Bossheartbar23);
+				}
+				if (hpBoss == 23) {
+					window.draw(Bossheartbar24);
+				}
+				if (hpBoss == 24) {
+					window.draw(Bossheartbar24);
+				}
+				if (hpBoss == 25) {
+					window.draw(Bossheartbar25);
+				}
+				if (hpBoss == 26) {
+					window.draw(Bossheartbar26);
+				}
+				if (hpBoss == 27) {
+					window.draw(Bossheartbar27);
+				}
+				if (hpBoss == 28) {
+					window.draw(Bossheartbar28);
+				}
+				if (hpBoss == 29) {
+					window.draw(Bossheartbar29);
+				}
+				if (hpBoss == 30) {
 					window.draw(Bossheartbar30);
 				}
+
 			}
 			if (showIcon == true) {
 				window.draw(superIcon);
 			}
 			window.draw(scoreText);
+			Time elapsed = Cclock.getElapsedTime();
+
+			mills = int(elapsed.asSeconds() * 100);
+			showTime(player.GetPosition().x + 600, player.GetPosition().y - 354, mills, window, &font);
 			window.display();
+			if (PlayerHP == 0) {
+				state = 2;
+			}
+			if (hpBoss == 0) {
+				state = 3;
+			}
+		}
+		if (state == 3) {
+			sf::Vector2i mouse = sf::Mouse::getPosition(window);
+			printf("mousepos x= %.0f y= %.0f\n", (float)mouse.x, (float)mouse.y);
+			Victory.setPosition(player.GetPosition().x - 768, player.GetPosition().y - 383);
+
+			backtomenu.setPosition(player.GetPosition().x - 240, player.GetPosition().y + 100);
+			exbacktomenu.setPosition(player.GetPosition().x - 240, player.GetPosition().y + 100);
+			sscore = mills;
+
+			userScore.push_back(make_pair(sscore, sname));
+			sort(userScore.begin(), userScore.end());
+
+
+			fopen("Score.txt", "w");
+			for (int i = 4; i >= 0; i--)
+			{
+				strcpy(temp, userScore[i].second.c_str());
+				fprintf(fp, "%s %d\n", temp, userScore[i].first);
+			}
+			fclose(fp);
+
+			window.draw(Victory);
+
+			window.display();
+			Sleep(3000);
+					state = 0;
+					goto start;
 		}
 	}
 	return 0;
@@ -1133,8 +1479,8 @@ int main() {
 
 //***********************************************************************กระสุนธรรมดา*********************************************
 void shoot(float x, float y) {
-	end = clock();
-	float dif = (float)(end - start) / CLOCKS_PER_SEC;
+	endd = clock();
+	float dif = (float)(endd - start) / CLOCKS_PER_SEC;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&& dif >0.5) {
 		for (int i = 0; i < 6; i++) {
 			if (chk_1[i] == 0) {
@@ -1173,8 +1519,8 @@ void shot(float x, float y) {
 
 //****************************************************************ยิงกระสุนพิเศษ*********************************************
 void shootsuper(float x, float y) {
-	end = clock();
-	float dif = (float)(end - start) / CLOCKS_PER_SEC;
+	endd = clock();
+	float dif = (float)(endd - start) / CLOCKS_PER_SEC;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && dif > 0.5) {
 		showIcon = false;
 		use_superpower = true;
@@ -1244,7 +1590,7 @@ void shotBullBossR1(float x, float y)
 {
 	for (int i = 0; i < 3; i++) {
 		if (chkboss_1[i] == 1) {
-			float speed = 0.5f;
+			float speed = 2.0f;
 			bulletboss1[i].bulletboss1.move(-speed, 0);
 			if (bulletboss1[i].bulletboss1.getPosition().x < x - 820) {
 				if (bulletboss1[2].bulletboss1.getPosition().x < x - 820) {
@@ -1262,7 +1608,7 @@ void randActBoss()
 {
 	srand(time(NULL));
 	EndBossAction = false;
-	randomActBoss = 1;//rand() % 4;
+	randomActBoss = rand() % 4;
 	if (randomActBoss == 0) {
 		ActBoss1 = true;
 	}
@@ -1318,7 +1664,7 @@ void shotBullBossR3(float x, float y)
 {
 	for (int i = 0; i < 3; i++) {
 		if (chkboss_3[i] == 1) {
-			float speed = 0.5f;
+			float speed = 2.0f;
 			bulletboss3[i].bulletboss2.move(speed, 0);
 			if (bulletboss3[i].bulletboss2.getPosition().x > x + 820 ) {
 				if (bulletboss3[2].bulletboss2.getPosition().x > x + 820) {
@@ -1578,16 +1924,17 @@ bool Collider::CheckCollistionbulletBossplayer1(Collider other, sf::Vector2f& di
 	sf::Vector2f otherPosition = other.GetPosition();
 	sf::Vector2f otherHalfSize = other.GetHalfSize();
 	sf::Vector2f thisPosition = GetPosition();
-	sf::Vector2f thisHalfSize = GetFullSize();
+	sf::Vector2f thisHalfSize = GetHalfSize();
 
 	float deltaX = otherPosition.x - thisPosition.x;
 	float deltaY = otherPosition.y - thisPosition.y;
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	printf("%f\n", intersectY);
+	//dprintf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if ((intersectX > -400.0f && intersectX < -176.0f) && intersectY < -66.5f) {
+	if (intersectX < -74.5f && intersectY < -47.8f) {
 		TM += 1;
 		if (hp_canDown == true) {
 			if (TM == 1.0f) {
@@ -1609,17 +1956,17 @@ bool Collider::CheckCollistionbulletBossplayer2(Collider other, sf::Vector2f& di
 	sf::Vector2f otherPosition = other.GetPosition();
 	sf::Vector2f otherHalfSize = other.GetHalfSize();
 	sf::Vector2f thisPosition = GetPosition();
-	sf::Vector2f thisHalfSize = GetFullSize();
+	sf::Vector2f thisHalfSize = GetHalfSize();
 
 	float deltaX = otherPosition.x - thisPosition.x;
 	float deltaY = otherPosition.y - thisPosition.y;
 
-	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectX = deltaX - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if ((intersectX > -180.0f &&intersectX < -108.0f) && intersectY < -99.0f) {
+	if ((intersectX > -246.5f && intersectX < -125.0f) && intersectY < -23.1f) {
 		TM += 1;
 		if (hp_canDown == true) {
 			if (TM == 1.0f) {
@@ -1695,7 +2042,7 @@ bool Collider::CheckCollistionbullmon(Collider other, sf::Vector2f& direction)
 		hpmon1 -= 1;
 		if (hpmon1 == 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+			//score += 100;
 		}
 		return true;
 	}
@@ -1721,7 +2068,7 @@ bool Collider::CheckCollistionbullmon2(Collider other, sf::Vector2f& direction)
 		hpmon2 -= 1;
 		if (hpmon2 == 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+			//score += 100;
 		}
 		return true;
 	}
@@ -1745,7 +2092,7 @@ bool Collider::CheckCollistionbullmon3(Collider other, sf::Vector2f& direction)
 		hpmon3 -= 1;
 		if (hpmon3 == 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+			//score += 100;
 		}
 		return true;
 	}
@@ -1768,7 +2115,7 @@ bool Collider::CheckCollistionbullmon4(Collider other, sf::Vector2f& direction)
 		hpmon4 -= 1;
 		if (hpmon4 == 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+			//score += 100;
 		}
 		return true;
 	}
@@ -1791,7 +2138,7 @@ bool Collider::CheckCollistionbullmon5(Collider other, sf::Vector2f& direction)
 		hpmon5 -= 1;
 		if (hpmon5 == 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+			//score += 100;
 		}
 		return true;
 	}
@@ -1814,7 +2161,7 @@ bool Collider::CheckCollistionbullmon6(Collider other, sf::Vector2f& direction)
 		hpmon6 -= 1;
 		if (hpmon6 == 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+			//score += 100;
 		}
 		return true;
 	}
@@ -1837,7 +2184,7 @@ bool Collider::CheckCollistionbullmon7(Collider other, sf::Vector2f& direction)
 		hpmon7 -= 1;
 		if (hpmon7 == 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+		//	score += 100;
 		}
 		return true;
 	}
@@ -1846,7 +2193,7 @@ bool Collider::CheckCollistionbullmon7(Collider other, sf::Vector2f& direction)
 bool Collider::CheckCollistionbullBoss1(Collider other, sf::Vector2f& direction)
 {
 	sf::Vector2f otherPosition = other.GetPosition();
-	sf::Vector2f otherHalfSize = other.GetFullSize();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
 	sf::Vector2f thisPosition = GetPosition();
 	sf::Vector2f thisHalfSize = GetHalfSize();
 
@@ -1855,15 +2202,15 @@ bool Collider::CheckCollistionbullBoss1(Collider other, sf::Vector2f& direction)
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if (intersectX < -157.0f && intersectY < 62.0f) {
+	if ((intersectX < -129.0f ) && (intersectY < 155.1f && intersectY > -40.8f)) {
 		hpBoss -= 1;
 		if (hpBoss == 0) {
-			other.SetPos(0.0f, 1000.0f);
-			score += 1000;
+			//score += 1000;
 		}
+		other.SetPos(0.0f, 2000.0f);
 		return true;
 	}
 	return false;
@@ -1878,17 +2225,17 @@ bool Collider::CheckCollistionbullBoss2(Collider other, sf::Vector2f& direction)
 	float deltaX = otherPosition.x - thisPosition.x;
 	float deltaY = otherPosition.y - thisPosition.y;
 
-	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectX = deltaX - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if (intersectX < -280.0f && intersectY < 77.0f) {
+	if (intersectX > 0.0f && (intersectY < 168.1f && intersectY > -14.0f)) {
 		hpBoss -= 1;
 		if (hpBoss == 0) {
-			other.SetPos(0.0f, 1000.0f);
-			score += 1000;
+			//score += 1000;
 		}
+		other.SetPos(0.0f, 1000.0f);
 		return true;
 	}
 	return false;
@@ -1896,7 +2243,7 @@ bool Collider::CheckCollistionbullBoss2(Collider other, sf::Vector2f& direction)
 bool Collider::CheckCollistionbullBoss3(Collider other, sf::Vector2f& direction)
 {
 	sf::Vector2f otherPosition = other.GetPosition();
-	sf::Vector2f otherHalfSize = other.GetFullSize();
+	sf::Vector2f otherHalfSize = other.GetHalfSize();
 	sf::Vector2f thisPosition = GetPosition();
 	sf::Vector2f thisHalfSize = GetHalfSize();
 
@@ -1905,15 +2252,15 @@ bool Collider::CheckCollistionbullBoss3(Collider other, sf::Vector2f& direction)
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if (intersectX < 58.0f && intersectY < 62.0f) {
+	if (intersectX < 58.0f && (intersectY < 155.1f && intersectY > -45.8f)) {
 		hpBoss -= 1;
 		if (hpBoss == 0) {
-			other.SetPos(0.0f, 1000.0f);
-			score += 1000;
+		//	score += 1000;
 		}
+		other.SetPos(0.0f, 1000.0f);
 		return true;
 	}
 	return false;
@@ -1930,15 +2277,15 @@ bool Collider::CheckCollistionbullBoss4(Collider other, sf::Vector2f& direction)
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if (intersectX < -143.0f && intersectY < 77.0f) {
+	if (intersectX < -143.0f && (intersectY < 165.1f && intersectY > -40.8f)) {
 		hpBoss -= 1;
 		if (hpBoss == 0) {
-			other.SetPos(0.0f, 1000.0f);
-			score += 1000;
+		//	score += 1000;
 		}
+		other.SetPos(0.0f, 1000.0f);
 		return true;
 	}
 	return false;
@@ -1960,10 +2307,10 @@ bool Collider::CheckCollistionsupbullmon(Collider other, sf::Vector2f& direction
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
 	if (intersectX < 0.0f && intersectY < 0.0f) {
-		hpmon1 -= 2;
+		hpmon1 -= 4;
 		if (hpmon1 <= 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+		//	score += 100;
 		}
 		return true;
 	}
@@ -1982,13 +2329,15 @@ bool Collider::CheckCollistionsupbullmon2(Collider other, sf::Vector2f& directio
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if (intersectX < 0.0f && intersectY < 0.0f) {
+	if (intersectX + 70 < 0.0f && intersectY < 0.0f) {
 		//printf("%d\n", hpmon2);
-		hpmon2 -= 2;
+		hpmon2 -= 4;
 		if (hpmon2 <= 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+		//	score += 100;
 		}
 		return true;
 	}
@@ -2009,10 +2358,10 @@ bool Collider::CheckCollistionsupbullmon3(Collider other, sf::Vector2f& directio
 
 	if (intersectX < 0.0f && intersectY < 0.0f) {
 		//printf("%d\n", hpmon2);
-		hpmon3 -= 2;
+		hpmon3 -= 4;
 		if (hpmon3 <= 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+			//score += 100;
 		}
 		return true;
 	}
@@ -2033,10 +2382,10 @@ bool Collider::CheckCollistionsupbullmon4(Collider other, sf::Vector2f& directio
 
 	if (intersectX < 0.0f && intersectY < 0.0f) {
 		//printf("%d\n", hpmon4);
-		hpmon4 -= 2;
+		hpmon4 -= 4;
 		if (hpmon4 <= 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+		//	score += 100;
 		}
 		return true;
 	}
@@ -2055,12 +2404,12 @@ bool Collider::CheckCollistionsupbullmon5(Collider other, sf::Vector2f& directio
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
-	if (intersectX < 0.0f && intersectY < 0.0f) {
+	if (intersectX + 70 < 0.0f && intersectY < 0.0f) {
 		//printf("%d\n", hpmon5);
-		hpmon5 -= 2;
+		hpmon5 -= 4;
 		if (hpmon5 <= 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+		//	score += 100;
 		}
 		return true;
 	}
@@ -2079,12 +2428,12 @@ bool Collider::CheckCollistionsupbullmon6(Collider other, sf::Vector2f& directio
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
-	if (intersectX < 0.0f && intersectY < 0.0f) {
+	if (intersectX + 70 < 0.0f && intersectY < 0.0f) {
 		//printf("%d\n", hpmon6);
-		hpmon6 -= 2;
+		hpmon6 -= 4;
 		if (hpmon6 <= 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+		//	score += 100;
 		}
 		return true;
 	}
@@ -2103,12 +2452,12 @@ bool Collider::CheckCollistionsupbullmon7(Collider other, sf::Vector2f& directio
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
 
-	if (intersectX < 0.0f && intersectY < 0.0f) {
+	if (intersectX + 70 < 0.0f && intersectY < 0.0f) {
 	//	printf("%d\n", hpmon7);
-		hpmon7 -= 2;
+		hpmon7 -= 4;
 		if (hpmon7 <= 0) {
 			other.SetPos(0.0f, 1000.0f);
-			score += 100;
+		//	score += 100;
 		}
 		return true;
 	}
@@ -2126,15 +2475,15 @@ bool Collider::CheckCollistionsupbullBoss1(Collider other, sf::Vector2f& directi
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if (intersectX < -150.0f && intersectY < 52.0f) {
-		hpBoss -= 2;
+	if (intersectX < -150.0f && (intersectY < 138.0f && intersectY > -110.0f)) {
+		hpBoss -= 4;
 		if (hpBoss <= 0) {
-			other.SetPos(0.0f, 2000.0f);
-			score += 1000;
+		//	score += 1000;
 		}
+		other.SetPos(0.0f, 2000.0f);
 		return true;
 	}
 	return false;
@@ -2149,17 +2498,17 @@ bool Collider::CheckCollistionsupbullBoss2(Collider other, sf::Vector2f& directi
 	float deltaX = otherPosition.x - thisPosition.x;
 	float deltaY = otherPosition.y - thisPosition.y;
 
-	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
+	float intersectX = (deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if ((intersectX > -85.0f && intersectX < 100.0f) && intersectY < 67.0f) {
-		hpBoss -= 2;
+	if (intersectX > -62.5f && (intersectY < 153.0f && intersectY > -110.0f)) {
+		hpBoss -= 4;
 		if (hpBoss <= 0) {
-			other.SetPos(0.0f, 1000.0f);
-			score += 1000;
+		//	score += 1000;
 		}
+		other.SetPos(0.0f, 1000.0f);
 		return true;
 	}
 	return false;
@@ -2176,15 +2525,15 @@ bool Collider::CheckCollistionsupbullBoss3(Collider other, sf::Vector2f& directi
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if (intersectX < 68.0f && intersectY < 52.0f) {
-		hpBoss -= 2;
+	if (intersectX < 68.0f && (intersectY < 137.1f && intersectY > -62.5f)) {
+		hpBoss -= 4;
 		if (hpBoss <= 0) {
-			other.SetPos(0.0f, 1000.0f);
-			score += 1000;
+			//score += 1000;
 		}
+		other.SetPos(0.0f, 1000.0f);
 		return true;
 	}
 	return false;
@@ -2201,15 +2550,15 @@ bool Collider::CheckCollistionsupbullBoss4(Collider other, sf::Vector2f& directi
 
 	float intersectX = abs(deltaX) - (otherHalfSize.x + thisHalfSize.x);
 	float intersectY = abs(deltaY) - (otherHalfSize.y + thisHalfSize.y);
-	/*printf("xxxxx%fxxxxx\n", intersectX);
-	printf("%f\n", intersectY);*/
+	//printf("xxxxx%fxxxxx\n", intersectX);
+	//printf("%f\n", intersectY);
 
-	if (intersectX < -118.0f && intersectY < 67.0f) {
-		hpBoss -= 2;
+	if (intersectX < -118.0f && (intersectY < 152.1f && intersectY > -48.0f)) {
+		hpBoss -= 4;
 		if (hpBoss <= 0) {
-			other.SetPos(0.0f, 1000.0f);
-			score += 1000;
+			//score += 1000;
 		}
+		other.SetPos(0.0f, 1000.0f);
 		return true;
 	}
 	return false;
@@ -2298,3 +2647,4 @@ void BossAct2::Draw(sf::RenderWindow& window)
 {
 	window.draw(Bossact2);
 }
+//**********************************************************************************************************************************************
